@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>设置用户信息</title>
+    <script type="text/javascript"
+            src="//connect.qq.com/qc_jssdk.js" charset="utf-8" data-callback="true">
+    </script>
 </head>
 <body>
-    <form >
+    <form action="{% url 'qq_save' %}" method="post">
   <div class="form-group">
     <label for="username">用户名</label>
-    <input type="text" class="form-control" id="username" placeholder="输入用户名">
+    <input type="text" class="form-control" id="username" name="username" placeholder="输入用户名">
   </div>
   <div class="form-group">
     <label for="password">密码</label>
-    <input type="password" class="form-control" id="password" placeholder="输入密码">
+    <input type="password" class="form-control" id="password" name="password" placeholder="输入密码">
   </div>
   <button type="submit" class="btn btn-default">保存</button>
 </form>
