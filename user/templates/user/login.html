@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}登录{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+{% block header_extends %}
+    <script type="text/javascript" charset="utf-8"
+            src="http://connect.qq.com/qc_jssdk.js"
+            data-appid="101515650"
+            data-redirecturi="http://lkqblog.cn/user/qq_save">
+    </script>
+    <script type="text/javascript"
+            src="//connect.qq.com/qc_jssdk.js" charset="utf-8" data-callback="true">
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="containter">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 ">
+                {% if not user.is_authenticated %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">登录</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                {% for field in login_form %}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    <p class="text-danger">{{ field.errors.as_text }}</p>
+                                {% endfor %}
+                                <span class="pull-left text-danger">{{ login_form.non_field_errors }}</span>
+                                <div class="clearfix"></div>
+                                <a href="{% url 'forgot_password' %}" class="pull-left">忘记密码？</a>
+                                <input type="submit" value="登录" class="btn btn-primary pull-right">
+                            </form>
+                        </div>
+                        <span>其他登录方式</span>
+                        {# <button class="btn btn-primary btn-sm" id="qqLogin">qq登录</button>#}
+                        <span id="qqLogin"></span>
+                        <script type="text/javascript">
+                            QC.Login({btnId: "qqLogin"});
+                        </script>
+                    </div>
+                {% else %}
+                    <span>已登录，即将跳转到首页</span>
+                    <script type="text/javascript">
+                        window.location.href = "/";
+                    </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

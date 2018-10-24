@@ -1,0 +1,9 @@
+.idea/
+settings.py
+db.sqlite3
+__pycache__/
+static_collect/
+uploadfiles/
+settings/
+media/
+data.json

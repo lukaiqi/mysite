@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    文件上传
+{% endblock %}
+
+{% block nav_home_active %}active{% endblock %}
+
+{% block content %}
+    <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <div class="form-group">
+            <label for="exampleInputFile">文件上传</label>
+            <input type="file" name="file">
+        </div>
+         <button type="submit" class="btn btn-default">上传</button>
+    </form>
+{% endblock %}
