@@ -232,7 +232,7 @@ def upload(request):
 
 
 def file_list(request):
-    return render(request, 'user/download.html')
+    return render(request, 'user/file_list.html')
 
 
 def file_download(request):
@@ -248,7 +248,8 @@ def file_download(request):
 
 
 def list_json(request):
-    file_path = '/home/mysite/files'
+    # file_path = '/home/mysite/files'
+    file_path = 'G:\\mysite_env\\mysite\\templates\\'
     file_name_list = listdir(file_path)
     context = {}
     context['file_name_list'] = file_name_list

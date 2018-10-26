@@ -37,6 +37,8 @@
         }
 
         function download() {
+            var value = $(this);
+            alert("value:",value);
             var url = "{% url 'file_download' %}";
             {#ajax进行下载#}
             var form = $("<form></form>")
@@ -45,7 +47,7 @@
             form.append($("<input></input>")
                 .attr("type", "hidden")
                 .attr("name", "filename")
-                .attr("value", '404.html'));
+                .attr("value", 'logo.png'));
             form.appendTo('body').submit().remove();
         }
 
@@ -62,12 +64,17 @@
                             "            <th id="+j+">" + j + "</th>\n" +
                             "            <th id=\"name\">" + result.file_name_list[i] +
                             "</th>\n" + "<th><button " +
-                            "class=\"btn btn-primary\" onclick=\"download()\">\n" +
+                            "class=\"btn btn-primary\" id=\"btn\">\n" +
                             "下载\n" + "</button></th>\n</tr>";
                         $("#table").append(text1);
                     }
                 }
             }
         }
+
+        $("#btn",this).click(function () {
+           var value = $(this).parents("tr").find("#name").val();
+           alert("value:",value);
+        });
     </script>
 {% endblock %}
