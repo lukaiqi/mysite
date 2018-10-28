@@ -15,6 +15,14 @@ class Profile(models.Model):
         return '<Profile:%s for %s>' % (self.nickname, self.user.username)
 
 
+class Phone_Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='电话')
+    phone = models.CharField(max_length=11)
+
+    def __str__(self):
+        return '<Phone:%s >' % (self.phone)
+
+
 class SendMail(threading.Thread):
 
     def __init__(self, subject, text, email, fail_silently=False):
@@ -33,7 +41,7 @@ class SendMail(threading.Thread):
             fail_silently=self.fail_silently
         )
 
-    def send_mail_to_admin(username, ipaddr,phone):
+    def send_mail_to_admin(username, ipaddr, phone):
         subject = '新用户注册通知'
         email = 'lkq18328816819@gmail.com'
         text = '新用户: ' + username + ' 注册成功!' + 'ip地址为:' + ipaddr + '!' + '手机号为:' + phone
@@ -61,6 +69,16 @@ def has_nickname(self):
     return Profile.objects.filter(user=self).exists()
 
 
+def get_phone(self):
+    if Phone_Profile.objects.filter(user=self).exists():
+        phone_profile = Phone_Profile.objects.get(user=self)
+        return phone_profile.phone
+    else:
+        return ''
+
+
 User.get_nickname = get_nickname
 User.has_nickname = has_nickname
 User.get_nickname_or_username = get_nickname_or_username
+
+User.get_phone = get_phone

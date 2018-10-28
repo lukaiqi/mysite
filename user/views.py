@@ -11,8 +11,9 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from .forms import LoginForm, RegForm, ChangeNicknameForm, BindEmailForm, ChangePasswordForm, ForgotPasswordForm
-from .models import Profile, SendMail
+from .forms import LoginForm, RegForm, ChangeNicknameForm, \
+    ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, BindPhoneForm
+from .models import Profile, SendMail, Phone_Profile
 
 
 def login(request):
@@ -90,26 +91,48 @@ def change_nickname(request):
     return render(request, 'form.html', context)
 
 
-def bind_email(request):
+def change_email(request):
     redirect_to = request.GET.get('from', reverse('home'))
     if request.method == 'POST':
-        form = BindEmailForm(request.POST, request=request)
+        form = ChangeEmailForm(request.POST, request=request)
         if form.is_valid():
             email = form.cleaned_data['email']
             request.user.email = email
             request.user.save()
-            del request.session['bind_email_code']
+            del request.session['change_email_code']
             return redirect(redirect_to)
     else:
-        form = BindEmailForm()
+        form = ChangeEmailForm()
     context = {}
     context['form'] = form
-    context['page_title'] = '绑定邮箱'
-    context['form_title'] = '绑定邮箱'
+    context['page_title'] = '修改邮箱'
+    context['form_title'] = '修改邮箱'
+    context['submit_text'] = '修改'
+    context['form'] = form
+    context['return_back_url'] = redirect_to
+    return render(request, 'user/change_email.html', context)
+
+
+def bind_phone(request):
+    redirect_to = request.GET.get('from', reverse('home'))
+    if request.method == 'POST':
+        form = BindPhoneForm(request.POST, user=request.user)
+        if form.is_valid():
+            phone = form.cleaned_data['phone']
+            phone_profile, created = Phone_Profile.objects.get_or_create(user=request.user)
+            phone_profile.phone = phone
+            phone_profile.save()
+            return redirect(redirect_to)
+    else:
+        form = BindPhoneForm()
+    context = {}
+    context['form'] = form
+    context['page_title'] = '绑定手机号'
+    context['form_title'] = '绑定手机号'
     context['submit_text'] = '绑定'
     context['form'] = form
     context['return_back_url'] = redirect_to
-    return render(request, 'user/bind_email.html', context)
+    return render(request, 'form.html', context)
 
 
 def send_verification_code(request):
@@ -138,7 +161,7 @@ def send_verification_code(request):
         path = '/dx/sendSms'
         method = 'POST'
         appcode = '6b5974d1336f415ca1901fd6ef6fe95b'
-        querys = 'mobile=' + phone + '&param=code%3A' + code + '&tpl_id=TP1711063'
+        querys = 'mobile=' + phone + '&param=code%3A' + code + '&tpl_id=TP1712202'
         bodys = {}
         url = host + path + '?' + querys
 
@@ -243,7 +266,7 @@ def file_download(request):
     file = open(file_path, 'rb')
     response = FileResponse(file)
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachment;filename='+name
+    response['Content-Disposition'] = 'attachment;filename=' + name
     return response
 
 
@@ -257,12 +280,16 @@ def list_json(request):
 
 
 def qq_login(request):
-    return render(request,'user/set_info.html')
+    return render(request, 'user/set_info.html')
+
 
 def qq_save(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    # 保存用户
     user = User.objects.create_user(username, password)
     user.save()
-    # 登录用户
-    user = auth.authenticate(username=username, password=password)
-    auth.login(request, user)
+    # # 登录用户
+    # user = auth.authenticate(request,username=username, password=password)
+    # auth.login(request, user)
     return redirect(request.GET.get('from', reverse('home')))

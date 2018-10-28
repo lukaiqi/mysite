@@ -42,17 +42,17 @@ class RegForm(forms.Form):
                                    })
                                )
     phone = forms.CharField(label='手机号',
-                             widget=forms.TextInput(
-                                 attrs={
-                                     'class': 'form-control', 'placeholder': '请输入11位手机号'
-                                 })
-                             )
-    email = forms.EmailField(label='邮箱',
-                            widget=forms.EmailInput(
+                            widget=forms.TextInput(
                                 attrs={
-                                    'class': 'form-control', 'placeholder': '请输入邮箱'
+                                    'class': 'form-control', 'placeholder': '请输入11位手机号'
                                 })
                             )
+    email = forms.EmailField(label='邮箱',
+                             widget=forms.EmailInput(
+                                 attrs={
+                                     'class': 'form-control', 'placeholder': '请输入邮箱'
+                                 })
+                             )
     verification_code = forms.CharField(label='验证码',
                                         max_length=6,
                                         required=False,
@@ -139,11 +139,11 @@ class ChangeNicknameForm(forms.Form):
         return nickname_new
 
 
-class BindEmailForm(forms.Form):
-    email = forms.EmailField(label='绑定邮箱',
+class ChangeEmailForm(forms.Form):
+    email = forms.EmailField(label='修改邮箱',
                              widget=forms.TextInput(
                                  attrs={'class': 'form-control',
-                                        'placeholder': '请输入正确的邮箱'
+                                        'placeholder': '请输入新的邮箱'
                                         })
                              )
     verification_code = forms.CharField(label='验证码',
@@ -158,7 +158,7 @@ class BindEmailForm(forms.Form):
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
             self.request = kwargs.pop('request')
-        super(BindEmailForm, self).__init__(*args, **kwargs)
+        super(ChangeEmailForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         # 判断用户是否登录
@@ -187,6 +187,35 @@ class BindEmailForm(forms.Form):
         if verification_code == '':
             raise forms.ValidationError('验证码不能为空')
         return verification_code
+
+
+class BindPhoneForm(forms.Form):
+    phone = forms.CharField(label='手机号',
+                                   max_length=20,
+                                   widget=forms.TextInput(
+                                       attrs={
+                                           'class': 'form-control', 'placeholder': '请输入手机号'
+                                       })
+                                   )
+
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+        super(BindPhoneForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        # 判断用户是否登录
+        if self.user.is_authenticated:
+            self.cleaned_data['user'] = self.user
+        else:
+            raise forms.ValidationError('用户尚未登录')
+        return self.cleaned_data
+
+    def clean_nickname_new(self):
+        nickname_new = self.cleaned_data.get('phone', '').strip()
+        if nickname_new == '':
+            raise forms.ValidationError('手机号不能为空')
+        return nickname_new
 
 
 class ChangePasswordForm(forms.Form):
@@ -274,5 +303,3 @@ class ForgotPasswordForm(forms.Form):
         if not (code != '' and code == verification_code):
             raise forms.ValidationError('验证码不正确')
         return verification_code
-
-

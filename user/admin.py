@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Phone_Profile
 
 
 class ProfileInline(admin.StackedInline):
@@ -9,14 +9,24 @@ class ProfileInline(admin.StackedInline):
     can_delete = False
 
 
+class Phone_ProfileInline(admin.StackedInline):
+    model = Phone_Profile
+    can_delete = False
+
+
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline,)
-    list_display = ('username', 'nickname', 'email', 'is_staff', 'is_active', 'is_superuser')
+    inlines = (ProfileInline, Phone_ProfileInline,)
+    list_display = ('username', 'nickname', 'phone', 'email', 'is_staff', 'is_active', 'is_superuser')
 
     def nickname(self, obj):
         return obj.profile.nickname
+
+    def phone(self, obj):
+        return obj.phone_profile.phone
+
     nickname.short_description = '昵称'
+    phone.short_description = '电话'
 
 
 # Re-register UserAdmin
@@ -27,3 +37,8 @@ admin.site.register(User, UserAdmin)
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'nickname')
+
+
+@admin.register(Phone_Profile)
+class Phone_ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone')
