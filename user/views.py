@@ -271,8 +271,8 @@ def file_download(request):
 
 
 def list_json(request):
-    # file_path = '/home/mysite/files'
-    file_path = 'G:\\mysite_env\\mysite\\templates\\'
+    file_path = '/home/mysite/files'
+    # file_path = 'G:\\mysite_env\\mysite\\templates\\'
     file_name_list = listdir(file_path)
     context = {}
     context['file_name_list'] = file_name_list
@@ -289,7 +289,7 @@ def qq_save(request):
     # 保存用户
     user = User.objects.create_user(username, password)
     user.save()
-    # # 登录用户
-    # user = auth.authenticate(request,username=username, password=password)
-    # auth.login(request, user)
-    return redirect(request.GET.get('from', reverse('home')))
+    # 登录用户
+    user = auth.authenticate(username=username, password=password)
+    auth.login(request, user)
+    return render(request,'user/register.html')

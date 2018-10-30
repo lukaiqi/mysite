@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}登录{% endblock %}
 {% block nav_home_active %}active{% endblock %}
-{#{% block header_extends %}#}
-{#    <script type="text/javascript"#}
-{#            src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101515650"#}
-{#            data-redirecturi="http://127.0.0.1:8000/user/qq_login" charset="utf-8">#}
-{#    </script>#}
-{#    <script type="text/javascript">#}
-{#        var paras = {};#}
-{#        QC.api("get_user_info", paras)#}
-{#            .complete(function (c) {//完成请求回调#}
-                {#alert("获取用户信息完成！");#}
-                {#window.location.reload();#}
-{#                window.location.href = "{% url 'qq_login' %}";#}
-{#            });#}
-{#    </script>#}
-{#{% endblock %}#}
+{% block header_extends %}
+    <script type="text/javascript"
+            src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101515650"
+            data-redirecturi="http://127.0.0.1:8000/user/qq_login" charset="utf-8">
+    </script>
+    <script type="text/javascript">
+        var paras = {};
+        QC.api("get_user_info", paras)
+            .complete(function (c) {//完成请求回调
+                alert("获取用户信息完成！");
+                window.location.reload();
+                window.location.href = "{% url 'qq_login' %}";
+            });
+    </script>
+{% endblock %}
 {% block content %}
     <div class="containter">
         <div class="row">
