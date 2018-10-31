@@ -10,7 +10,6 @@
         var paras = {};
         QC.api("get_user_info", paras)
             .complete(function (c) {//完成请求回调
-                alert("获取用户信息完成！");
                 window.location.reload();
                 window.location.href = "{% url 'qq_login' %}";
             });
