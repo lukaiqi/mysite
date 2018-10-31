@@ -12,31 +12,37 @@
                 {% if user.is_authenticated %}
                     <h2>欢迎您~{{ user.username }}</h2>
                     <ul>
-                        {% if user.get_nickname %}
-                            <li>昵称：{{ user.get_nickname }}
+                        <li>
+                            {% if user.get_nickname %}
+                                昵称：{{ user.get_nickname }}
                                 <a href="{% url 'change_nickname' %}?from={{ request.get_full_path }}">
                                     修改昵称
                                 </a>
-                            </li>
-                        {% else %}
-                            <li>昵称:未设置
+                            {% else %}
+                                昵称:未设置
                                 <a href="{% url 'change_nickname' %}?from={{ request.get_full_path }}">
                                     设置昵称
                                 </a>
-                            </li>
-                        {% endif %}
-                        {% if user.get_phone %}
-                            <li>电话:{{ user.get_phone }}                            </li>
-                        {% else %}
-                            <li>电话:未设置
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if user.get_phone %}
+                                电话:{{ user.get_phone }}
+                            {% else %}
+                                电话:未设置
                                 <a href="{% url 'bind_phone' %}?from={{ request.get_full_path }}">
                                     绑定手机号
                                 </a>
-                            </li>
-                        {% endif %}
-
-                        <li>邮箱： {{ user.email }}
-                            <a href="{% url 'change_email' %}?from={{ request.get_full_path }}">修改</a>
+                            {% endif %}
+                        </li>
+                        <li>邮箱：
+                            {% if user.email %}
+                                {{ user.email }}
+                                <a href="{% url 'change_email' %}?from={{ request.get_full_path }}">修改邮箱</a>
+                            {% else %}
+                                未绑定
+                                <a href="{% url 'change_email' %}?from={{ request.get_full_path }}">绑定邮箱</a>
+                            {% endif %}
                         </li>
                         <li>上一次登陆时间:{{ user.last_login|date:"Y-m-d H:i:s" }}</li>
                         <li>登录IP：<span id="ip"></span></li>

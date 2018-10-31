@@ -286,10 +286,11 @@ def qq_login(request):
 def qq_save(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
+    email = ''
     # 保存用户
-    user = User.objects.create_user(username, password)
+    user = User.objects.create_user(username, email, password)
     user.save()
     # 登录用户
     user = auth.authenticate(username=username, password=password)
     auth.login(request, user)
-    return render(request,'user/register.html')
+    return redirect(reverse('user_info'))

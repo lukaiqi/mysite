@@ -211,11 +211,11 @@ class BindPhoneForm(forms.Form):
             raise forms.ValidationError('用户尚未登录')
         return self.cleaned_data
 
-    def clean_nickname_new(self):
-        nickname_new = self.cleaned_data.get('phone', '').strip()
-        if nickname_new == '':
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone', '').strip()
+        if phone == '':
             raise forms.ValidationError('手机号不能为空')
-        return nickname_new
+        return phone
 
 
 class ChangePasswordForm(forms.Form):
