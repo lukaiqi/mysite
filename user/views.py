@@ -12,7 +12,8 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
-    ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, BindPhoneForm
+    ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
+    BindPhoneForm, ChangePhoneForm
 from .models import Profile, SendMail, Phone_Profile
 
 
@@ -45,11 +46,18 @@ def register(request):
             user.save()
             # 清除session
             del request.session['register_code']
+            # 登录用户
+            user = auth.authenticate(username=username, password=password)
+            auth.login(request, user)
             # 获取ip地址
             ipaddr = get_ip(request).getvalue()
             str = bytes.decode(ipaddr)
             IP = str.split(':')[1].split('}')[0]
             SendMail.send_mail_to_admin(username, IP, phone)
+            # 保存电话
+            phone_profile, created = Phone_Profile.objects.get_or_create(user=request.user)
+            phone_profile.phone = phone
+            phone_profile.save()
             return redirect(request.GET.get('from', reverse('login')))
     else:
         reg_form = RegForm()
@@ -133,6 +141,28 @@ def bind_phone(request):
     context['form'] = form
     context['return_back_url'] = redirect_to
     return render(request, 'form.html', context)
+
+
+def change_phone(request):
+    redirect_to = request.GET.get('from', reverse('home'))
+    if request.method == 'POST':
+        form = ChangePhoneForm(request.POST, request=request)
+        if form.is_valid():
+            phone = form.cleaned_data['phone']
+            phone_profile, created = Phone_Profile.objects.get_or_create(user=request.user)
+            phone_profile.phone = phone
+            phone_profile.save()
+            return redirect(redirect_to)
+    else:
+        form = ChangePhoneForm()
+    context = {}
+    context['form'] = form
+    context['page_title'] = '修改手机号'
+    context['form_title'] = '修改手机号'
+    context['submit_text'] = '修改'
+    context['form'] = form
+    context['return_back_url'] = redirect_to
+    return render(request, 'user/change_phone.html', context)
 
 
 def send_verification_code(request):
@@ -290,6 +320,12 @@ def qq_save(request):
     # 保存用户
     user = User.objects.create_user(username, email, password)
     user.save()
+    # 获取ip地址
+    ipaddr = get_ip(request).getvalue()
+    str = bytes.decode(ipaddr)
+    IP = str.split(':')[1].split('}')[0]
+    phone = ''
+    SendMail.send_mail_to_admin(username, IP, phone)
     # 登录用户
     user = auth.authenticate(username=username, password=password)
     auth.login(request, user)

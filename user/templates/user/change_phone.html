@@ -6,19 +6,19 @@
     <script type="text/javascript">
         $('#send_code').click(function () {
             {#发送验证码后禁止修改邮箱#}
-            $("#id_email").addClass('disabled');
-            $("#id_email").attr('disabled', true);
-            var email = $("#id_email").val();
-            if (email == "") {
-                $("#tip").text('邮箱不能为空');
+            $("#id_phone").addClass('disabled');
+            $("#id_phone").attr('disabled', true);
+            var phone = $("#id_phone").val();
+            if (phone == "") {
+                $("#tip").text('手机号不能为空');
                 return false;
             }
             $.ajax({
                 url: "{% url 'send_verification_code' %}",
                 type: "GET",
                 data: {
-                    'email': email,
-                    'send_for':'bind_email_code'
+                    'phone': phone,
+                    'send_for':'change_phone_code'
                 },
                 cache: false,
                 success: function (data) {

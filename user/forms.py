@@ -141,13 +141,13 @@ class ChangeNicknameForm(forms.Form):
 
 class ChangeEmailForm(forms.Form):
     email = forms.EmailField(label='修改邮箱',
-                             widget=forms.TextInput(
+                             widget=forms.EmailInput(
                                  attrs={'class': 'form-control',
                                         'placeholder': '请输入新的邮箱'
                                         })
                              )
     verification_code = forms.CharField(label='验证码',
-                                        max_length=6,
+                                        max_length=4,
                                         required=False,
                                         widget=forms.TextInput(
                                             attrs={'class': 'form-control',
@@ -166,9 +166,6 @@ class ChangeEmailForm(forms.Form):
             self.cleaned_data['user'] = self.request.user
         else:
             raise forms.ValidationError('用户尚未登录')
-        # 判断用户是否绑定邮箱
-        if self.request.user.email != '':
-            raise forms.ValidationError('你已绑定邮箱')
         # 判断验证码
         code = self.request.session.get('bind_email_code', '')
         verification_code = self.cleaned_data.get('verification_code', '')
@@ -189,14 +186,63 @@ class ChangeEmailForm(forms.Form):
         return verification_code
 
 
+class ChangePhoneForm(forms.Form):
+    phone = forms.CharField(label='新的手机号',
+                            max_length=11,
+                             widget=forms.TextInput(
+                                 attrs={'class': 'form-control',
+                                        'placeholder': '请输入新的手机号'
+                                        })
+                             )
+    verification_code = forms.CharField(label='验证码',
+                                        max_length=4,
+                                        required=False,
+                                        widget=forms.TextInput(
+                                            attrs={'class': 'form-control',
+                                                   'placeholder': '点击"发送验证码"发送到手机'
+                                                   })
+                                        )
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+        super(ChangePhoneForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        # 判断用户是否登录
+        if self.request.user.is_authenticated:
+            self.cleaned_data['user'] = self.request.user
+        else:
+            raise forms.ValidationError('用户尚未登录')
+        # 判断验证码
+        code = self.request.session.get('change_phone_code', '')
+        verification_code = self.cleaned_data.get('verification_code', '')
+        if not (code != '' and code == verification_code):
+            raise forms.ValidationError('验证码不正确')
+        return self.cleaned_data
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+        if User.objects.filter(phone_profile__phone=phone).exists():
+            raise forms.ValidationError('手机号已被绑定')
+        return phone
+
+
+    def clean_verification_code(self):
+        verification_code = self.cleaned_data.get('verification_code', '').strip()
+        if verification_code == '':
+            raise forms.ValidationError('验证码不能为空')
+        return verification_code
+
+
 class BindPhoneForm(forms.Form):
     phone = forms.CharField(label='手机号',
-                                   max_length=20,
-                                   widget=forms.TextInput(
-                                       attrs={
-                                           'class': 'form-control', 'placeholder': '请输入手机号'
-                                       })
-                                   )
+                            max_length=20,
+                            widget=forms.TextInput(
+                                attrs={
+                                    'class': 'form-control', 'placeholder': '请输入手机号'
+                                })
+                            )
 
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs:
