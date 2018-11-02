@@ -43,7 +43,7 @@ class SendMail(threading.Thread):
 
     def send_mail_to_admin(username, ipaddr, phone):
         subject = '新用户注册通知'
-        email = 'lkq18328816819@gmail.com'
+        email = 'mengluowusheng@gmail.com'
         text = '新用户: ' + username + ' 注册成功!' + 'ip地址为:' + ipaddr + '!' + '手机号为:' + phone
         send_mail = SendMail(subject, text, email)
         send_mail.start()
