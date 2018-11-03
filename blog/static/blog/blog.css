@@ -73,3 +73,7 @@ p#reply_title {
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.5em;
 }
+
+a:link{
+    color: #000000;
+}

@@ -13,6 +13,30 @@ div#container {
 }
 
 div.hot-data {
-    text-align: center;
+    text-align: left;
     margin-top: 2em;
+}
+
+h3.hot-title {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.4em;
+    margin-right: 4em;
+}
+
+div.content-item {
+    margin-left: 10em;
+    margin-right: 6em;
+}
+
+a:link {
+    color: #000000
+}
+
+h3.type-title {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.4em;
+    margin-right: 4em;
+}
+div.images{
+    text-align: center;
 }
