@@ -1,20 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}登录{% endblock %}
 {% block nav_home_active %}active{% endblock %}
-{% block header_extends %}
-    <script type="text/javascript"
-            src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101515650"
-            data-redirecturi="http://lkqblog.cn/user/qq_login" charset="utf-8">
-    </script>
-    <script type="text/javascript">
-        var paras = {};
-        QC.api("get_user_info", paras)
-            .complete(function (c) {//完成请求回调
-                window.location.reload();
-                window.location.href = "{% url 'qq_login' %}";
-            });
-    </script>
-{% endblock %}
 {% block content %}
     <div class="containter">
         <div class="row">
@@ -38,13 +24,12 @@
                                 <input type="submit" value="登录" class="btn btn-primary pull-right">
                             </form>
                         </div>
-                        <span>其他登录方式</span>
-                        <span id="qqLoginBtn"></span>
-                        <script type="text/javascript">
-                            QC.Login({
-                                btnId: "qqLoginBtn"	//插入按钮的节点id
-                            });
-                        </script>
+{#                        <div>#}
+{#                            <span>其它账号登录：</span>#}
+{#                            <a href="{% url 'qq_login' %}" title="QQ登录">#}
+{#                                <img src="/static/images/qq_logo.png" alt="QQ登录">#}
+{#                            </a>#}
+{#                        </div>#}
                     </div>
                 {% else %}
                     <span>已登录，即将跳转到首页</span>

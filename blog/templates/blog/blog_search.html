@@ -1,0 +1,11 @@
+{% extends "blog/blog_list.html" %}
+ 
+{% block title %}
+	博客搜索
+{% endblock %}
+ 
+{% block blog_header %}		
+	<div class="alert alert-success" role="alert">
+		关键字：“{{wd}}” 所有博文
+	</div>
+{% endblock %}

@@ -23,7 +23,6 @@ def login(request):
         if login_form.is_valid():
             user = login_form.cleaned_data['user']
             auth.login(request, user)
-
             return redirect(request.GET.get('from', reverse('home')))
     else:
         login_form = LoginForm()
