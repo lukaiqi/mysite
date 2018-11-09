@@ -69,7 +69,7 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
-    return render(request, 'home.html')
+    return redirect('/')
 
 
 def user_info(request):

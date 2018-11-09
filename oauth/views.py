@@ -1,6 +1,6 @@
 import time
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse  # url逆向解析
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -100,7 +100,7 @@ def bind_email(request):
                 # 登录用户
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
-            return render(request, 'home.html')
+            return redirect('/')
     else:
         # 正常加载
         form = BindEmail(initial={
