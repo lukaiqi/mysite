@@ -68,7 +68,7 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect(request.GET.get('from', reverse('home')))
+    return render(request,'home.html')
 
 
 def user_info(request):
@@ -115,7 +115,6 @@ def change_email(request):
     context['page_title'] = '修改邮箱'
     context['form_title'] = '修改邮箱'
     context['submit_text'] = '修改'
-    context['form'] = form
     context['return_back_url'] = redirect_to
     return render(request, 'user/change_email.html', context)
 

@@ -1,16 +1,17 @@
-from django.http import HttpResponse, HttpResponseRedirect
+import time
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.urls import reverse  # url逆向解析
 from django.contrib.auth.models import User
-from django.contrib.auth import logout, authenticate, login
+from django.contrib import auth
+from django.contrib.auth import authenticate, login
 from django.conf import settings
 from oauth.oauth_client import OAuth_QQ
 from oauth.models import OAuth_ex
 from oauth.forms import BindEmail
-import time
+from user.models import Profile
 
 
-# http://yshblog.com/oauth/qq_login
 def qq_login(request):
     oauth_qq = OAuth_QQ(settings.QQ_APP_ID, settings.QQ_APP_KEY, settings.QQ_RECALL_URL)
     # 获取 得到Authorization Code的地址
@@ -51,57 +52,48 @@ def bind_email(request):
     open_id = request.GET.get('open_id')
     nickname = request.GET.get('nickname')
     data = {}
-
+    data['page_title'] = '绑定'
     data['form_title'] = '绑定用户'
-    data['submit_name'] = '确定'
+    data['submit_text'] = '确定'
     data['form_tip'] = 'Hi, <span class="label label-info">' \
-                       '<img src="/static/img/connect/logo_qq.png">%s</span>！' \
+                       '<img src="/static/images/qq_logo.png">%s</span>！' \
                        '您已登录。请绑定用户，完成QQ登录' % nickname
 
     if request.method == 'POST':
         # 表单提交
-        form = BindEmail(request.POST)
-
+        form = BindEmail(request.POST, request=request)
         # 验证是否合法
         if form.is_valid():
-            # 判断邮箱是否注册了
             qq_openid = form.cleaned_data['qq_openid']
             qq_nickname = form.cleaned_data['qq_nickname']
             email = form.cleaned_data['email']
-            pwd = form.cleaned_data['pwd']
-
+            password = form.cleaned_data['password']
             users = User.objects.filter(email=email)
             if users:
+                username = users[0]
                 # 用户存在，则直接绑定
-                user = users[0]
-                if not user.first_name:
-                    user.first_name = qq_nickname  # 更新昵称
-                    user.save()
-                data['message'] = u'绑定账号成功，绑定到%s”' % email
+                profile, created = Profile.objects.get_or_create(user=username)
+                profile.nickname = qq_nickname
+                profile.save()
+                # 绑定用户
+                oauth_ex = OAuth_ex(user=username, qq_openid=qq_openid)
+                oauth_ex.save()
+                # 登录用户
+                user = auth.authenticate(username=username, password=password)
+                auth.login(request, user)
             else:
-                # 用户不存在，则注册，并发送激活邮件
-                user = User(username=email, email=email)
-                user.first_name = qq_nickname  # 使用QQ昵称作为昵称
-                user.set_password(pwd)
-                user.is_active = False
+                # 用户不存在，则注册
+                username = qq_nickname  # 使用QQ昵称作为用户名
+                user = User.objects.create_user(username, email, password)
                 user.save()
-                data['message'] = '绑定账号成功，绑定到%s'
+                # 绑定用户
+                oauth_ex = OAuth_ex(user=user, qq_openid=qq_openid)
+                oauth_ex.save()
+                # 登录用户
+                user = auth.authenticate(username=username, password=password)
+                auth.login(request, user)
 
-            # 绑定用户并
-            oauth_ex = OAuth_ex(user=user, qq_openid=qq_openid)
-            oauth_ex.save()
-
-            # 登录用户
-            user = authenticate(username=email, password=pwd)
-            if user is not None:
-                login(request, user)
-
-            # 页面提示
-            data['goto_url'] = '/'
-            data['goto_time'] = 3000
-            data['goto_page'] = True
-
-            return render_to_response('message.html', data)
+            return render(request, 'home.html')
     else:
         # 正常加载
         form = BindEmail(initial={
@@ -109,4 +101,4 @@ def bind_email(request):
             'qq_nickname': nickname,
         })
     data['form'] = form
-    return render(request, 'form.html', data)
+    return render(request, 'bind_email.html', data)

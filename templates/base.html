@@ -44,7 +44,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">
                             {% if user.has_nickname %}
-                                {{ user.username }}({{ user.profile.nickname }})
+                                {{ user.profile.nickname }}
                             {% else %}
                                 {{ user.username }}
                             {% endif %}
@@ -52,9 +52,8 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'user_info' %}?from={{ request.get_full_path }}">个人资料</a></li>
-                            <li><a href="{% url 'change_password' %}">修改密码</a></li>
                             {% if user.is_staff or user.is_superuser %}
-                                <li><a href="{% url 'admin:index' %}">后台管理</a></li>
+                                <li><a href="http://lkqblog.cn/admin/blog/blog/add/">发布博客</a></li>
                                 <li><a href="{% url 'show' %}">环境显示</a></li>
                                 <li><a href="{% url 'upload' %}">文件上传</a></li>
                             {% endif %}

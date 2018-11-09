@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}杨仕航的博客{% endblock %}
+{% block title %}绑定成功{% endblock %}
 
 {% block content %}
     {#显示消息的页面#}
     <div class="row">
-        <center><h4 style="line-height:300%;">{{ message|safe }}</h4></center>
+        <h4 style="line-height:300%;">{{ message|safe }}</h4>
     </div>
 {% endblock %}
 
-{% block extra_footer %}
+{% block script_extends %}
     <script type="text/javascript">
         {#页面调整控制#}
         {% if goto_page %}
