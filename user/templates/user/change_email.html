@@ -6,15 +6,15 @@
     <script type="text/javascript">
         $('#send_code').click(function () {
             {#发送验证码后禁止修改邮箱#}
-            $("#id_email").addClass('disabled');
-            $("#id_email").attr('disabled', true);
+            $("#id_email").addClass('readonly');
+            $("#id_email").attr('readonly',true);
             var email = $("#id_email").val();
             if (email == "") {
                 $("#tip").text('邮箱不能为空');
                 return false;
             }
             $.ajax({
-                url: "{% url 'send_verification_code' %}",
+                url: "{% url 'send_email_verification_code' %}",
                 type: "GET",
                 data: {
                     'email': email,
@@ -34,10 +34,10 @@
             var time = 30;
             $(this).text(time + 'S');
             var interval = setInterval(() => {
-                if (time < 0) {
+                if (time < 1) {
                     clearInterval(interval);
                     $(this).removeClass('disabled');
-                    $(this).attr('disabled', false);
+                    $(this).attr('disabled',false);
                     $(this).text('发送验证码');
                     return false;
                 }

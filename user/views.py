@@ -68,7 +68,7 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
-    return render(request,'home.html')
+    return render(request, 'home.html')
 
 
 def user_info(request):
@@ -163,7 +163,7 @@ def change_phone(request):
     return render(request, 'user/change_phone.html', context)
 
 
-def send_verification_code(request):
+def send_msg_verification_code(request):
     phone = request.GET.get('phone', '')
     send_for = request.GET.get('send_for', '')
     data = {}
@@ -200,6 +200,34 @@ def send_verification_code(request):
         content = response.read()
         if (content):
             print(content)
+        data['status'] = 'SUCCESS'
+    else:
+        data['status'] = 'ERROR'
+    return JsonResponse(data)
+
+
+def send_email_verification_code(request):
+    email = request.GET.get('email', '')
+    send_for = request.GET.get('send_for', '')
+    data = {}
+    if email != '':
+        # 生成验证码
+        code = ''.join(random.sample(string.digits, 4))
+        now = int(time.time())
+        send_code_time = request.session.get('send_code_time', 0)
+        if now - send_code_time < 30:
+            data['status'] = 'ERROR'
+        else:
+            request.session[send_for] = code
+            request.session['send_code_time'] = now
+        # 发送邮件
+        send_mail(
+            '邮箱验证',
+            '验证码 %s' % code,
+            '1263041461@qq.com',
+            [email],
+            fail_silently=False,
+        )
         data['status'] = 'SUCCESS'
     else:
         data['status'] = 'ERROR'
@@ -305,26 +333,3 @@ def list_json(request):
     context = {}
     context['file_name_list'] = file_name_list
     return JsonResponse(context)
-
-
-def qq_login(request):
-    return render(request, 'user/set_info.html')
-
-
-def qq_save(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    email = ''
-    # 保存用户
-    user = User.objects.create_user(username, email, password)
-    user.save()
-    # 获取ip地址
-    ipaddr = get_ip(request).getvalue()
-    str = bytes.decode(ipaddr)
-    IP = str.split(':')[1].split('}')[0]
-    phone = ''
-    SendMail.send_mail_to_admin(username, IP, phone)
-    # 登录用户
-    user = auth.authenticate(username=username, password=password)
-    auth.login(request, user)
-    return redirect(reverse('user_info'))

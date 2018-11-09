@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import auth
 from django.contrib.auth.models import User
+from .models import get_phone
 
 
 class LoginForm(forms.Form):
@@ -179,7 +180,7 @@ class ChangeEmailForm(forms.Form):
             raise forms.ValidationError('邮箱已被绑定')
         return email
 
-    def clean_verification_code(self):
+    def clean_emial_verification_code(self):
         verification_code = self.cleaned_data.get('verification_code', '').strip()
         if verification_code == '':
             raise forms.ValidationError('验证码不能为空')
@@ -258,9 +259,9 @@ class BindPhoneForm(forms.Form):
         return self.cleaned_data
 
     def clean_phone(self):
-        phone = self.cleaned_data.get('phone', '').strip()
-        if phone == '':
-            raise forms.ValidationError('手机号不能为空')
+        phone = self.cleaned_data.get('phone', '')
+        if User.objects.filter(get_phone=phone):
+            raise forms.ValidationError('号码已被绑定')
         return phone
 
 
