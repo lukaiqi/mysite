@@ -1,15 +1,16 @@
 import time
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from django.urls import reverse  # url逆向解析
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.conf import settings
 from oauth.oauth_client import OAuth_QQ
 from oauth.models import OAuth_ex
 from oauth.forms import BindEmail
-from user.models import Profile
+from user.models import Profile, SendMail
+from user.views import get_ip
 
 
 def qq_login(request):
@@ -58,7 +59,10 @@ def bind_email(request):
     data['form_tip'] = 'Hi, <span class="label label-info">' \
                        '<img src="/static/images/qq_logo.png">%s</span>！' \
                        '您已登录。请绑定用户，完成QQ登录' % nickname
-
+    # 获取ip地址
+    ipaddr = get_ip(request).getvalue()
+    str = bytes.decode(ipaddr)
+    IP = str.split(':')[1].split('}')[0]
     if request.method == 'POST':
         # 表单提交
         form = BindEmail(request.POST, request=request)
@@ -78,6 +82,8 @@ def bind_email(request):
                 # 绑定用户
                 oauth_ex = OAuth_ex(user=username, qq_openid=qq_openid)
                 oauth_ex.save()
+                # 发送邮件
+                SendMail.send_mail_qqbind(username.username, IP, nickname)
                 # 登录用户
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
@@ -89,10 +95,11 @@ def bind_email(request):
                 # 绑定用户
                 oauth_ex = OAuth_ex(user=user, qq_openid=qq_openid)
                 oauth_ex.save()
+                # 发送邮件
+                SendMail.send_mail_qqreg(username, IP, nickname)
                 # 登录用户
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
-
             return render(request, 'home.html')
     else:
         # 正常加载

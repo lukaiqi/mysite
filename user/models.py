@@ -41,10 +41,24 @@ class SendMail(threading.Thread):
             fail_silently=self.fail_silently
         )
 
-    def send_mail_to_admin(username, ipaddr, phone):
+    def send_mail_reg(username, ipaddr, phone):
         subject = '新用户注册通知'
         email = 'mengluowusheng@gmail.com'
         text = '新用户: ' + username + ' 注册成功!' + 'ip地址为:' + ipaddr + '!' + '手机号为:' + phone
+        send_mail = SendMail(subject, text, email)
+        send_mail.start()
+
+    def send_mail_qqbind(username, ipaddr, nickname):
+        subject = '新用户注册通知'
+        email = 'mengluowusheng@gmail.com'
+        text = '用户: ' + username + ' 绑定qq号成功!' + 'ip地址为:' + ipaddr + '!' + 'qq昵称为:' + nickname
+        send_mail = SendMail(subject, text, email)
+        send_mail.start()
+
+    def send_mail_qqreg(username, ipaddr, nickname):
+        subject = '新用户注册通知'
+        email = 'mengluowusheng@gmail.com'
+        text = '用户: ' + username + ' qq创建账号成功!' + 'ip地址为:' + ipaddr + '!' + 'qq昵称为:' + nickname
         send_mail = SendMail(subject, text, email)
         send_mail.start()
 

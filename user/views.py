@@ -52,7 +52,8 @@ def register(request):
             ipaddr = get_ip(request).getvalue()
             str = bytes.decode(ipaddr)
             IP = str.split(':')[1].split('}')[0]
-            SendMail.send_mail_to_admin(username, IP, phone)
+            # 发送邮件
+            SendMail.send_mail_reg(username, IP, phone)
             # 保存电话
             phone_profile, created = Phone_Profile.objects.get_or_create(user=request.user)
             phone_profile.phone = phone
