@@ -29,8 +29,6 @@
                                     {{ blog_type.type_name }} ({{ blog_type.blog_count }})
                                 </a>
                             </li>
-                        {% empty %}
-                            <li>暂无分类</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -94,8 +92,6 @@
                                     {{ hot_data.content_object.title }}
                                 </a>
                             </li>
-                        {% empty %}
-                            <li>今天暂时没有热门博客</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -110,8 +106,6 @@
                                     {{ hot_data.title }}
                                 </a>
                             </li>
-                        {% empty %}
-                            <li>昨天暂时没有热门博客</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -126,8 +120,6 @@
                                     {{ hot_blog.title }}
                                 </a>
                             </li>
-                        {% empty %}
-                            <li>昨天暂时没有热门博客</li>
                         {% endfor %}
                     </ul>
                 </div>
