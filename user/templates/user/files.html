@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}文件列表{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'user/list.css' %}">
+    <script type="text/javascript" src="{% static 'jquery-1.12.4.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <table class="table table-hover table-bordered" id="table">
+        <tr class="success" id="title">
+            <th>名称</th>
+            <th>操作</th>
+        </tr>
+        {% for files in file_name_list %}
+            <tr class="success" id="title">
+                <th><h4>{{ files }}</h4></th>
+                <th>
+                    <button class="btn btn-primary" onclick="download()">下载</button>
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block script_extends %}
+    <script type="text/javascript">
+        function download() {
+            $(document).ready(function () {
+                $("#table").find("button").click(function () {
+                    var hang = $(this).parent().parent().prevAll().length;
+                    var lie = $(this).parent().prevAll().length + 1;
+                    var select = $("h4").eq(hang - 1).text();
+                    var url = "{% url 'file_download' %}";
+                    {#ajax进行下载#}
+                    var form = $("<form></form>")
+                        .attr("action", url)
+                        .attr("method", "get");
+                    form.append($("<input></input>")
+                        .attr("type", "hidden")
+                        .attr("name", "filename")
+                        .attr("value", select));
+                    form.appendTo('body').submit().remove();
+                })
+            })
+        }
+    </script>
+
+{% endblock %}

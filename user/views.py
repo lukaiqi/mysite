@@ -312,7 +312,12 @@ def upload(request):
 
 
 def file_list(request):
-    return render(request, 'user/file_list.html')
+    # file_path = 'G:\\mysite_env\\mysite\\templates\\'
+    file_path = '/home/mysite/files/'
+    file_name_list = listdir(file_path)
+    context = {}
+    context['file_name_list'] = file_name_list
+    return render(request, 'user/files.html',context)
 
 
 def file_download(request):
@@ -326,11 +331,3 @@ def file_download(request):
     response['Content-Disposition'] = 'attachment;filename=' + name
     return response
 
-
-def list_json(request):
-    file_path = '/home/mysite/files'
-    # file_path = 'G:\\mysite_env\\mysite\\templates\\'
-    file_name_list = listdir(file_path)
-    context = {}
-    context['file_name_list'] = file_name_list
-    return JsonResponse(context)
