@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除</title>
+    <script type="text/javascript">
+        function tiaozhuan() {
+            window.setTimeout(function () {
+                window.location = '{%url 'file_list' %}';
+            }, 3000);
+        };
+    </script>
+</head>
+<body onload="tiaozhuan()">
+    <h4>删除成功</h4>
+    <h4>3s后跳转到之前页面</h4>
+    <h4><a href="{% url 'file_list' %}">立即返回</a></h4>
+</body>
+</html>

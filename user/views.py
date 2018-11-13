@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
@@ -328,6 +329,13 @@ def file_download(request):
     file = open(file_path, 'rb')
     response = FileResponse(file)
     response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachment;filename=' + name
+    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(escape_uri_path(name))
     return response
 
+def file_delete(request):
+    name = request.GET.get('filename')
+    # base_path = 'G:\\mysite_env\\mysite\\templates\\'
+    base_path = '/home/mysite/files/'
+    file_path = base_path + name
+    os.remove(file_path)
+    return render(request,'user/file_del.html')

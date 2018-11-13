@@ -8,15 +8,19 @@
 {% endblock %}
 {% block content %}
     <table class="table table-hover table-bordered" id="table">
-        <tr class="success" id="title">
+        <tr class="success">
             <th>名称</th>
+            <th>操作</th>
             <th>操作</th>
         </tr>
         {% for files in file_name_list %}
             <tr class="success" id="title">
                 <th><h4>{{ files }}</h4></th>
                 <th>
-                    <button class="btn btn-primary" onclick="download()">下载</button>
+                    <button class="btn btn-primary">下载</button>
+                </th>
+                <th>
+                    <button class="btn btn-danger">删除</button>
                 </th>
             </tr>
         {% endfor %}
@@ -25,12 +29,12 @@
 
 {% block script_extends %}
     <script type="text/javascript">
-        function download() {
-            $(document).ready(function () {
-                $("#table").find("button").click(function () {
-                    var hang = $(this).parent().parent().prevAll().length;
-                    var lie = $(this).parent().prevAll().length + 1;
-                    var select = $("h4").eq(hang - 1).text();
+        $(document).ready(function () {
+            $("#table").find('button').click(function () {
+                var name = $(this).text();
+                var hang = $(this).parent().parent().prevAll().length;
+                var select = $("h4").eq(hang - 1).text();
+                if (name == "下载") {
                     var url = "{% url 'file_download' %}";
                     {#ajax进行下载#}
                     var form = $("<form></form>")
@@ -41,9 +45,23 @@
                         .attr("name", "filename")
                         .attr("value", select));
                     form.appendTo('body').submit().remove();
-                })
+                }
+                else {
+                    var url = "{% url 'file_delete' %}";
+                    var r = confirm("确定删除吗");
+                    if (r == true) {
+                        {#ajax进行删除#}
+                        var form = $("<form></form>")
+                            .attr("action", url)
+                            .attr("method", "get");
+                        form.append($("<input></input>")
+                            .attr("type", "hidden")
+                            .attr("name", "filename")
+                            .attr("value", select));
+                        form.appendTo('body').submit().remove();
+                    }
+                }
             })
-        }
+        })
     </script>
-
 {% endblock %}
