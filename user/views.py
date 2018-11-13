@@ -179,14 +179,6 @@ def send_msg_verification_code(request):
         else:
             request.session[send_for] = code
             request.session['send_code_time'] = now
-        # 发送邮件
-        # send_mail(
-        #     '邮箱验证',
-        #     '验证码 %s' % code,
-        #     '1263041461@qq.com',
-        #     [email],
-        #     fail_silently=False,
-        # )
         host = 'http://dingxin.market.alicloudapi.com'
         path = '/dx/sendSms'
         method = 'POST'
@@ -313,12 +305,16 @@ def upload(request):
 
 
 def file_list(request):
-    # file_path = 'G:\\mysite_env\\mysite\\templates\\'
-    file_path = '/home/mysite/files/'
-    file_name_list = listdir(file_path)
-    context = {}
-    context['file_name_list'] = file_name_list
-    return render(request, 'user/files.html',context)
+    print(request.user.username,type(request.user.username))
+    if request.user.is_superuser:
+        # file_path = 'G:\\mysite_env\\mysite\\templates\\'
+        file_path = '/home/mysite/files/'
+        file_name_list = listdir(file_path)
+        context = {}
+        context['file_name_list'] = file_name_list
+        return render(request, 'user/files.html',context)
+    else:
+        return render(request,'user/error.html')
 
 
 def file_download(request):
