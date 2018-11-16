@@ -57,13 +57,6 @@ class Comment(models.Model):
             context['url'] = self.content_object.get_url()
             text = render(None, 'comment/send_mail.html', context).content.decode('utf-8')
             send_mail = SendMail(subject, text, email)
-            # send_mail(
-            #     subject,
-            #     text,
-            #     '1263041461@qq.com',
-            #     [email],
-            #     fail_silently=False,
-            # )
             send_mail.start()
 
     def __str__(self):

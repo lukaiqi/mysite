@@ -52,7 +52,7 @@
                         <li>登录IP：<span id="ip"></span></li>
                         <li><a href="{% url 'change_password' %}">修改密码</a></li>
                         {% if user.is_staff or user.is_superuser %}
-                            <li><a href="{% url 'file_list' %}">下载</a></li>
+                            <li><a href="{% url 'file_list' %}">文件列表</a></li>
                         {% endif %}
                     </ul>
                 {% else %}

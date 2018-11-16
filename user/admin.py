@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Profile, Phone_Profile
+from .models import Profile, Phone_Profile,Info
 
 
 class ProfileInline(admin.StackedInline):
@@ -42,3 +42,7 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Phone_Profile)
 class Phone_ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone')
+
+@admin.register(Info)
+class InfoAdmin(admin.ModelAdmin):
+    list_display = ('user','send_time','text')

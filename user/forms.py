@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import auth
 from django.contrib.auth.models import User
-from .models import get_phone
+from ckeditor.widgets import CKEditorWidget
 
 
 class LoginForm(forms.Form):
@@ -190,11 +190,11 @@ class ChangeEmailForm(forms.Form):
 class ChangePhoneForm(forms.Form):
     phone = forms.CharField(label='新的手机号',
                             max_length=11,
-                             widget=forms.TextInput(
-                                 attrs={'class': 'form-control',
-                                        'placeholder': '请输入新的手机号'
-                                        })
-                             )
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control',
+                                       'placeholder': '请输入新的手机号'
+                                       })
+                            )
     verification_code = forms.CharField(label='验证码',
                                         max_length=4,
                                         required=False,
@@ -227,7 +227,6 @@ class ChangePhoneForm(forms.Form):
         if User.objects.filter(phone_profile__phone=phone).exists():
             raise forms.ValidationError('手机号已被绑定')
         return phone
-
 
     def clean_verification_code(self):
         verification_code = self.cleaned_data.get('verification_code', '').strip()
@@ -350,3 +349,7 @@ class ForgotPasswordForm(forms.Form):
         if not (code != '' and code == verification_code):
             raise forms.ValidationError('验证码不正确')
         return verification_code
+
+
+class SendInfoForm(forms.Form):
+    text = forms.CharField(widget=CKEditorWidget())

@@ -52,7 +52,6 @@ def home(request):
     context = {}
     context['dates'] = dates
     context['read_nums'] = read_nums
-    # context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))
     context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))
     context['today_hot_data'] = get_today_hot_data(blog_content_type)
     context['hot_blogs_for_7_days'] = hot_blogs_for_7_days

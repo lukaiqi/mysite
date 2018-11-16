@@ -14,8 +14,8 @@ from django.http import JsonResponse
 from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
-    BindPhoneForm, ChangePhoneForm
-from .models import Profile, SendMail, Phone_Profile
+    BindPhoneForm, ChangePhoneForm,SendInfoForm
+from .models import Profile, SendMail, Phone_Profile,Info
 
 
 def login(request):
@@ -305,16 +305,15 @@ def upload(request):
 
 
 def file_list(request):
-    print(request.user.username,type(request.user.username))
     if request.user.is_superuser:
         # file_path = 'G:\\mysite_env\\mysite\\templates\\'
         file_path = '/home/mysite/files/'
         file_name_list = listdir(file_path)
         context = {}
         context['file_name_list'] = file_name_list
-        return render(request, 'user/files.html',context)
+        return render(request, 'user/files.html', context)
     else:
-        return render(request,'user/error.html')
+        return render(request, 'user/error.html')
 
 
 def file_download(request):
@@ -328,10 +327,23 @@ def file_download(request):
     response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(escape_uri_path(name))
     return response
 
+
 def file_delete(request):
     name = request.GET.get('filename')
     # base_path = 'G:\\mysite_env\\mysite\\templates\\'
     base_path = '/home/mysite/files/'
     file_path = base_path + name
     os.remove(file_path)
-    return render(request,'user/file_del.html')
+    return render(request, 'user/file_del.html')
+
+
+def info(request):
+    info = Info.objects.all()
+    print(info)
+    content = list(info)[0]
+    text = content.text
+    time = content.send_time
+    context = {}
+    context['time'] =time
+    context['text'] = text
+    return render(request,'user/info.html',context)
