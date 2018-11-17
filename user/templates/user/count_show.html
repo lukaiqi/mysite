@@ -26,31 +26,48 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                        <table class="table table-bordered" style="table-layout: fixed">
-                            <tr class="success">
-                                <th>日期</th>
-                                <th>访问数</th>
-                            </tr>
-                            {% for field in day %}
-                                <tr class="success">
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="collapse"
+                                    data-target="#day">
+                                每日访问量
+                            </button>
+                            <div id="day" class="collapse in">
+                                <table class="table table-bordered" style="table-layout: fixed">
+                                    <tr class="success">
+                                        <th>日期</th>
+                                        <th>访问数</th>
+                                    </tr>
+                                    {% for field in day %}
+                                        <tr class="success">
 
-                                    <th><h4>{{ field.day }}</h4></th>
-                                    <th><h4>{{ field.count }}</h4></th>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                        <table class="table table-bordered" style="table-layout: fixed">
-                            <tr class="success">
-                                <th>IP</th>
-                                <th>访问数</th>
-                            </tr>
-                            {% for field in ip %}
-                                <tr class="success">
-                                    <th><h4>{{ field.ip }}</h4></th>
-                                    <th><h4>{{ field.count }}</h4></th>
-                                </tr>
-                            {% endfor %}
-                        </table>
+                                            <th><h4>{{ field.day }}</h4></th>
+                                            <th><h4>{{ field.count }}</h4></th>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="collapse"
+                                    data-target="#ip">
+                                IP访问次数
+                            </button>
+                            <div id="ip" class="collapse in">
+                                <table class="table table-bordered" style="table-layout: fixed">
+                                    <tr class="success">
+                                        <th>IP</th>
+                                        <th>访问数</th>
+                                    </tr>
+                                    {% for field in ip %}
+                                        <tr class="success">
+                                            <th><h4>{{ field.ip }}</h4></th>
+                                            <th><h4>{{ field.count }}</h4></th>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
