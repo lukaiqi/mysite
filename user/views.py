@@ -352,14 +352,17 @@ def info(request):
 
 
 def count_show(request):
-    day_num = DayNumber.objects.all()
-    visit_num = VisitNumber.objects.all()
-    ip_num = Userip.objects.all()
-    content_day = list(day_num)
-    content_num = list(visit_num)
-    content_ip = list(ip_num)
-    context = {}
-    context['day'] = content_day
-    context['visit'] = content_num
-    context['ip'] = content_ip
-    return render(request, 'user/count_show.html', context)
+    if request.user.is_superuser:
+        day_num = DayNumber.objects.all()
+        visit_num = VisitNumber.objects.all()
+        ip_num = Userip.objects.all()
+        content_day = list(day_num)
+        content_num = list(visit_num)
+        content_ip = list(ip_num)
+        context = {}
+        context['day'] = content_day
+        context['visit'] = content_num
+        context['ip'] = content_ip
+        return render(request, 'user/count_show.html', context)
+    else:
+        return render(request, 'user/error.html')
