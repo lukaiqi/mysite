@@ -53,6 +53,7 @@
                         <li><a href="{% url 'change_password' %}">修改密码</a></li>
                         {% if user.is_staff or user.is_superuser %}
                             <li><a href="{% url 'file_list' %}">文件列表</a></li>
+                            <li><a href="{% url 'count_show' %}">访问统计</a></li>
                         {% endif %}
                     </ul>
                 {% else %}

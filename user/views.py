@@ -15,7 +15,8 @@ from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
-from .models import Profile, SendMail, Phone_Profile, Info,Statistics
+from .models import Profile, SendMail, Phone_Profile, Info, \
+    Statistics, VisitNumber, Userip, DayNumber, change_info
 
 
 def login(request):
@@ -341,7 +342,6 @@ def file_delete(request):
 def info(request):
     Statistics.count(request)
     info = Info.objects.all()
-    print(info)
     content = list(info)[0]
     text = content.text
     time = content.send_time
@@ -351,4 +351,15 @@ def info(request):
     return render(request, 'user/info.html', context)
 
 
-
+def count_show(request):
+    day_num = DayNumber.objects.all()
+    visit_num = VisitNumber.objects.all()
+    ip_num = Userip.objects.all()
+    content_day = list(day_num)
+    content_num = list(visit_num)
+    content_ip = list(ip_num)
+    context = {}
+    context['day'] = content_day
+    context['visit'] = content_num
+    context['ip'] = content_ip
+    return render(request, 'user/count_show.html', context)

@@ -99,11 +99,12 @@ class Userip(models.Model):
 
 # 网站总访问次数
 class VisitNumber(models.Model):
+
     site = models.CharField(verbose_name='站名', max_length=20, default='lkqblog.cn')
-    count = models.IntegerField(verbose_name='网站访问总次数', default=0)  # 网站访问总次数
+    count = models.IntegerField(verbose_name='网站总访次数', default=0)  # 网站访问总次数
 
     class Meta:
-        verbose_name = '网站访问总次数'
+        verbose_name = '网站总访问数'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -125,7 +126,7 @@ class DayNumber(models.Model):
 
 def change_info(request):  # 修改网站访问量和访问ip等信息
     # 每一次访问，网站总访问次数加一
-    count_nums = VisitNumber.objects.filter(id=1)
+    count_nums = VisitNumber.objects.filter(site='lkqblog.cn')
     if count_nums:
         count_nums = count_nums[0]
         count_nums.count += 1
