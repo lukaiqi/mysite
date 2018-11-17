@@ -350,6 +350,3 @@ class ForgotPasswordForm(forms.Form):
             raise forms.ValidationError('验证码不正确')
         return verification_code
 
-
-class SendInfoForm(forms.Form):
-    text = forms.CharField(widget=CKEditorWidget())

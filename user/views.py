@@ -14,8 +14,8 @@ from django.http import JsonResponse
 from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
-    BindPhoneForm, ChangePhoneForm,SendInfoForm
-from .models import Profile, SendMail, Phone_Profile,Info
+    BindPhoneForm, ChangePhoneForm
+from .models import Profile, SendMail, Phone_Profile, Info,Statistics
 
 
 def login(request):
@@ -74,6 +74,7 @@ def logout(request):
 
 
 def user_info(request):
+    Statistics.count(request)
     context = {}
     return render(request, 'user/user_info.html', context)
 
@@ -338,12 +339,16 @@ def file_delete(request):
 
 
 def info(request):
+    Statistics.count(request)
     info = Info.objects.all()
     print(info)
     content = list(info)[0]
     text = content.text
     time = content.send_time
     context = {}
-    context['time'] =time
+    context['time'] = time
     context['text'] = text
-    return render(request,'user/info.html',context)
+    return render(request, 'user/info.html', context)
+
+
+

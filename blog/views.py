@@ -7,6 +7,7 @@ from .models import Blog, BlogType
 from read_statistics.utils import read_statistics_once_read
 from comment.models import Comment
 from comment.forms import CommentForm
+from user.models import Statistics
 
 
 def get_blog_list_common_data(request, blogs_all_list):
@@ -46,12 +47,14 @@ def get_blog_list_common_data(request, blogs_all_list):
 
 
 def blog_list(request):
+    Statistics.count(request)
     blogs_all_list = Blog.objects.all()
     context = get_blog_list_common_data(request, blogs_all_list)
     return render(request, 'blog/blog_list.html', context)
 
 
 def blogs_with_type(request, blog_type_pk):
+    Statistics.count(request)
     blog_type = get_object_or_404(BlogType, pk=blog_type_pk)
     blogs_all_list = Blog.objects.filter(blog_type=blog_type)
     context = get_blog_list_common_data(request, blogs_all_list)
@@ -60,6 +63,7 @@ def blogs_with_type(request, blog_type_pk):
 
 
 def blogs_with_date(request, year, month):
+    Statistics.count(request)
     blogs_all_list = Blog.objects.filter(created_time__year=year, created_time__month=month)
     context = get_blog_list_common_data(request, blogs_all_list)
     context['blogs_with_date'] = '%s年%s月' % (year, month)
@@ -67,6 +71,7 @@ def blogs_with_date(request, year, month):
 
 
 def blog_detail(request, blog_pk):
+    Statistics.count(request)
     blog = get_object_or_404(Blog, pk=blog_pk)
     read_cookie_key = read_statistics_once_read(request, blog)
     context = {}

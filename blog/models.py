@@ -9,6 +9,10 @@ from read_statistics.models import ReadNumExpandMethod, ReadDetail
 class BlogType(models.Model):
     type_name = models.CharField(max_length=15)
 
+    class Meta:
+        verbose_name = '博客类型'
+        verbose_name_plural = verbose_name
+
     def __str__(self):
         return self.type_name
 
@@ -33,3 +37,5 @@ class Blog(models.Model, ReadNumExpandMethod):
 
     class Meta:
         ordering = ['-created_time']
+        verbose_name = '博客'
+        verbose_name_plural = verbose_name
