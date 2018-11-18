@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from .models import Message
 
 
@@ -12,9 +12,11 @@ def write(request):
         dht11value = request.POST.get('dht11value', '')
         mq2value = request.POST.get('mq2value', '')
         lightvalue = request.POST.get('lightvalue', '')
-        data = Message.objects.filter(id=1).update(ds18b20value=ds18b20value, dht11value=dht11value, mq2value=mq2value,
-                                                   lightvalue=lightvalue)
-    return ''
+        Message.objects.filter(id=1).update(ds18b20value=ds18b20value,
+                                            dht11value=dht11value,
+                                            mq2value=mq2value,
+                                            lightvalue=lightvalue)
+    return HttpResponse('success')
 
 
 def show(request):
