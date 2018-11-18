@@ -16,7 +16,7 @@ def write(request):
                                             dht11value=dht11value,
                                             mq2value=mq2value,
                                             lightvalue=lightvalue)
-    return HttpResponse('success')
+        return HttpResponse('success')
 
 
 def show(request):
