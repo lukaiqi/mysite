@@ -3,9 +3,8 @@ from django.db import models
 from django.utils import timezone
 
 
-# Create your models here.
 # 访问网站的ip地址和次数
-class Userip(models.Model):
+class IpNumber(models.Model):
     ip = models.CharField(verbose_name='IP地址', max_length=30)  # ip地址
     count = models.IntegerField(verbose_name='访问次数', default=0)  # 该ip访问次数
 
@@ -53,6 +52,7 @@ def change_info(request):  # 修改网站访问量和访问ip等信息
         count_nums = VisitNumber()
         count_nums.count = 1
     count_nums.save()
+
     # 记录访问ip和每个ip的次数
     if 'HTTP_X_FORWARDED_FOR' in request.META:  # 获取ip
         client_ip = request.META['HTTP_X_FORWARDED_FOR']
@@ -67,7 +67,8 @@ def change_info(request):  # 修改网站访问量和访问ip等信息
         ip_num = Userip()
         ip_num.ip = client_ip
         ip_num.count = 1
-        ip_num.save()
+    ip_num.save()
+
     # 增加今日访问次数
     date = timezone.now().date()
     today = DayNumber.objects.filter(day=date)

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}访问统计{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'user/list.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4> 访问统计 </h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered" style="table-layout: fixed">
+                            <tr class="success">
+                                <th>站点</th>
+                                <th>访问数</th>
+                            </tr>
+                            {% for field in visit %}
+                                <tr class="success">
+                                    <th><h4>{{ field.site }}</h4></th>
+                                    <th><h4>{{ field.count }}</h4></th>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        <table class="table table-bordered" style="table-layout: fixed">
+                            <tr class="success">
+                                <th>日期</th>
+                                <th>访问数</th>
+                            </tr>
+                            {% for field in day %}
+                                <tr class="success">
+
+                                    <th><h4>{{ field.day }}</h4></th>
+                                    <th><h4>{{ field.count }}</h4></th>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        <table class="table table-bordered" style="table-layout: fixed">
+                            <tr class="success">
+                                <th>IP</th>
+                                <th>访问数</th>
+                            </tr>
+                            {% for field in ip %}
+                                <tr class="success">
+                                    <th><h4>{{ field.ip }}</h4></th>
+                                    <th><h4>{{ field.count }}</h4></th>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

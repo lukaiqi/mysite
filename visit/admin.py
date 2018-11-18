@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Userip, VisitNumber, DayNumber
+from .models import IpNumber, DayNumber, VisitNumber
 
 
 # Register your models here.
-@admin.register(Userip)
+@admin.register(IpNumber)
 class UseripAdmin(admin.ModelAdmin):
     list_display = ('ip', 'count')
 
