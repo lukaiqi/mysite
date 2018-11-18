@@ -4,7 +4,7 @@ from .models import IpNumber, DayNumber, VisitNumber
 
 # Register your models here.
 @admin.register(IpNumber)
-class UseripAdmin(admin.ModelAdmin):
+class IpNumberAdmin(admin.ModelAdmin):
     list_display = ('ip', 'count')
 
 

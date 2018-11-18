@@ -59,12 +59,12 @@ def change_info(request):  # 修改网站访问量和访问ip等信息
         client_ip = client_ip.split(",")[0]  # 所以这里是真实的ip
     else:
         client_ip = request.META['REMOTE_ADDR']  # 这里获得代理ip
-    ip_exist = Userip.objects.filter(ip=str(client_ip))
+    ip_exist = IpNumber.objects.filter(ip=str(client_ip))
     if ip_exist:  # 判断是否存在该ip
         ip_num = ip_exist[0]
         ip_num.count += 1
     else:
-        ip_num = Userip()
+        ip_num = IpNumber()
         ip_num.ip = client_ip
         ip_num.count = 1
     ip_num.save()

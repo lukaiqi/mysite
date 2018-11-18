@@ -6,11 +6,10 @@ from django.db.models import Sum
 from django.core.cache import cache
 from django.db.models import Count
 from read_statistics.utils import get_seven_days_read_data, \
-    get_today_hot_data, get_thirty_days_read_data
-from blog.models import Blog,BlogType
-from user.models import SendMail,Statistics
-from user.views import get_ip
-from blog.views import get_blog_list_common_data
+    get_today_hot_data
+from blog.models import Blog, BlogType
+from visit.models import Statistics
+
 
 def get_7_days_hot_blogs():
     today = timezone.now().date()
@@ -58,4 +57,3 @@ def home(request):
     context['hot_blogs_for_7_days'] = hot_blogs_for_7_days
     context['hot_blogs_for_30_days'] = hot_blogs_for_30_days
     return render(request, 'home.html', context)
-

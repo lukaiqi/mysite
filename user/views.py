@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -15,8 +16,7 @@ from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
-from .models import Profile, SendMail, Phone_Profile, Info, \
-    Statistics
+from .models import Profile, SendMail, Phone_Profile, Info
 from visit.models import Statistics
 
 
@@ -75,6 +75,7 @@ def logout(request):
     return redirect('/')
 
 
+@cache_page(60 * 5)
 def user_info(request):
     Statistics.count(request)
     context = {}
@@ -340,6 +341,7 @@ def file_delete(request):
     return render(request, 'user/file_del.html')
 
 
+@cache_page(60 * 5)
 def info(request):
     Statistics.count(request)
     info = Info.objects.all()
@@ -350,6 +352,3 @@ def info(request):
     context['time'] = time
     context['text'] = text
     return render(request, 'user/info.html', context)
-
-
-
