@@ -37,5 +37,5 @@ class Blog(models.Model, ReadNumExpandMethod):
 
     class Meta:
         ordering = ['-created_time']
-        verbose_name = '博客'
+        verbose_name = '博客列表'
         verbose_name_plural = verbose_name

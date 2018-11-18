@@ -21,5 +21,4 @@ urlpatterns = [
     path('file_list/', views.file_list, name='file_list'),
     path('file_delete/', views.file_delete, name='file_delete'),
     path('info/', views.info, name='info'),
-    path('count_show/', views.count_show, name='count_show'),
 ]

@@ -12,14 +12,17 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.utils.encoding import escape_uri_path
+from django.views.decorators.cache import cache_page
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
-from .models import Profile, SendMail, Phone_Profile, Info, \
-    Statistics, VisitNumber, Userip, DayNumber, change_info
+from .models import Profile, SendMail, Phone_Profile, Info
+from visit.models import Statistics
 
 
+@cache_page(60 * 5)
 def login(request):
+    Statistics.count(request)
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
@@ -34,7 +37,9 @@ def login(request):
     return render(request, 'user/login.html', context)
 
 
+@cache_page(60 * 5)
 def register(request):
+    Statistics.count(request)
     if request.method == 'POST':
         reg_form = RegForm(request.POST, request=request)
         if reg_form.is_valid():
@@ -74,6 +79,7 @@ def logout(request):
     return redirect('/')
 
 
+@cache_page(60 * 5)
 def user_info(request):
     Statistics.count(request)
     context = {}
@@ -315,7 +321,7 @@ def file_list(request):
         context['file_name_list'] = file_name_list
         return render(request, 'user/files.html', context)
     else:
-        return render(request, 'user/error.html')
+        return render(request, 'error.html')
 
 
 def file_download(request):
@@ -349,20 +355,3 @@ def info(request):
     context['time'] = time
     context['text'] = text
     return render(request, 'user/info.html', context)
-
-
-def count_show(request):
-    if request.user.is_superuser:
-        day_num = DayNumber.objects.all()
-        visit_num = VisitNumber.objects.all()
-        ip_num = Userip.objects.all()
-        content_day = list(day_num)
-        content_num = list(visit_num)
-        content_ip = list(ip_num)
-        context = {}
-        context['day'] = content_day
-        context['visit'] = content_num
-        context['ip'] = content_ip
-        return render(request, 'user/count_show.html', context)
-    else:
-        return render(request, 'user/error.html')

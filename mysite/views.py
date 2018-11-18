@@ -5,11 +5,13 @@ from django.utils import timezone
 from django.db.models import Sum
 from django.core.cache import cache
 from django.db.models import Count
+from django.views.decorators.cache import cache_page
 from read_statistics.utils import get_seven_days_read_data, \
     get_today_hot_data, get_thirty_days_read_data
 from blog.models import Blog,BlogType
-from user.models import SendMail,Statistics
+from user.models import SendMail
 from user.views import get_ip
+from visit.models import Statistics
 from blog.views import get_blog_list_common_data
 
 def get_7_days_hot_blogs():
@@ -34,6 +36,7 @@ def get_30_days_hot_blogs():
     return blogs[:7]
 
 
+@cache_page(60*5)
 def home(request):
     Statistics.count(request)
     blog_content_type = ContentType.objects.get_for_model(Blog)

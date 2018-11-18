@@ -3,11 +3,12 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
+from django.views.decorators.cache import cache_page
 from .models import Blog, BlogType
 from read_statistics.utils import read_statistics_once_read
 from comment.models import Comment
 from comment.forms import CommentForm
-from user.models import Statistics
+from visit.models import Statistics
 
 
 def get_blog_list_common_data(request, blogs_all_list):
@@ -46,6 +47,7 @@ def get_blog_list_common_data(request, blogs_all_list):
     return context
 
 
+@cache_page(60 * 5)
 def blog_list(request):
     Statistics.count(request)
     blogs_all_list = Blog.objects.all()
@@ -53,6 +55,7 @@ def blog_list(request):
     return render(request, 'blog/blog_list.html', context)
 
 
+@cache_page(60 * 5)
 def blogs_with_type(request, blog_type_pk):
     Statistics.count(request)
     blog_type = get_object_or_404(BlogType, pk=blog_type_pk)
@@ -62,6 +65,7 @@ def blogs_with_type(request, blog_type_pk):
     return render(request, 'blog/blogs_with_type.html', context)
 
 
+@cache_page(60 * 5)
 def blogs_with_date(request, year, month):
     Statistics.count(request)
     blogs_all_list = Blog.objects.filter(created_time__year=year, created_time__month=month)
@@ -70,6 +74,7 @@ def blogs_with_date(request, year, month):
     return render(request, 'blog/blogs_with_date.html', context)
 
 
+@cache_page(60 * 5)
 def blog_detail(request, blog_pk):
     Statistics.count(request)
     blog = get_object_or_404(Blog, pk=blog_pk)
@@ -83,8 +88,9 @@ def blog_detail(request, blog_pk):
     return response
 
 
+@cache_page(60 * 5)
 def blog_search(request):
     wd = request.GET['wd']
     blogs = Blog.objects.filter(title__contains=wd)
-    context = get_blog_list_common_data(request,blogs)
+    context = get_blog_list_common_data(request, blogs)
     return render(request, 'blog/blog_search.html', context)

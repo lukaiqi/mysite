@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Profile, Phone_Profile, Info, Userip, VisitNumber, DayNumber
+from .models import Profile, Phone_Profile, Info
 
 
 class ProfileInline(admin.StackedInline):
@@ -47,18 +47,3 @@ class Phone_ProfileAdmin(admin.ModelAdmin):
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
     list_display = ('user', 'send_time', 'text')
-
-
-@admin.register(Userip)
-class UseripAdmin(admin.ModelAdmin):
-    list_display = ('ip', 'count')
-
-
-@admin.register(VisitNumber)
-class VisitNumberAdmin(admin.ModelAdmin):
-    list_display = ('site','count')
-
-
-@admin.register(DayNumber)
-class DayNumberAdmin(admin.ModelAdmin):
-    list_display = ('day', 'count')
