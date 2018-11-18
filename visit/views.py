@@ -15,6 +15,6 @@ def count_show(request):
         context['day'] = content_day
         context['visit'] = content_num
         context['ip'] = content_ip
-        return render(request, 'user/count_show.html', context)
+        return render(request, 'visit/count_show.html', context)
     else:
         return render(request, 'error.html')
