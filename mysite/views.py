@@ -34,7 +34,6 @@ def get_30_days_hot_blogs():
     return blogs[:7]
 
 
-@cache_page(30)
 def home(request):
     Statistics.count(request)
     blog_content_type = ContentType.objects.get_for_model(Blog)
