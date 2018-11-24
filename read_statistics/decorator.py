@@ -31,16 +31,13 @@ def record_view(model_type):
                 # 总记录+1
                 obj_type = ContentType.objects.get_for_model(obj)
                 viewers = ReadNum.objects.filter(content_type=obj_type, object_id=obj.id)
-
-                if viewers.count() > 0:
-                    viewer = viewers[0]
-                else:
-                    viewer = ReadNum(content_type=obj_type, object_id=obj.blog_pk)
+                viewer = viewers[0]
+                print(viewers[0].read_num)
                 viewer.read_num += 1
                 viewer.save()
 
             # 执行原来的方法(响应页面)
-            response = func(request, blog_pk)
+            response = func(request, obj.id)
 
             # 添加临时cookie，30s之后就过期
             response.set_cookie(cookie_name, 'key', max_age=30)
