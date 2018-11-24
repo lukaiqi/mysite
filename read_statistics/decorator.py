@@ -31,8 +31,10 @@ def record_view(model_type):
                 # 总记录+1
                 obj_type = ContentType.objects.get_for_model(obj)
                 viewers = ReadNum.objects.filter(content_type=obj_type, object_id=obj.id)
-                viewer = viewers[0]
-                print(viewers[0].read_num)
+                if viewers.count() > 0:
+                    viewer = viewers[0]
+                else:
+                    viewer = ReadNum(content_type=obj_type, object_id=obj.id)
                 viewer.read_num += 1
                 viewer.save()
 
