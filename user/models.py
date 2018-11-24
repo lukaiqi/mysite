@@ -43,45 +43,6 @@ class Info(models.Model):
         return '<Text:%s >' % (self.text)
 
 
-class SendMail(threading.Thread):
-    def __init__(self, subject, text, email, fail_silently=False):
-        self.subject = subject
-        self.text = text
-        self.email = email
-        self.fail_silently = fail_silently
-        threading.Thread.__init__(self)
-
-    def run(self):
-        send_mail(
-            self.subject,
-            self.text,
-            settings.EMAIL_HOST_USER,
-            [self.email],
-            fail_silently=self.fail_silently
-        )
-
-    def send_mail_reg(username, ipaddr, phone):
-        subject = '新用户注册通知'
-        email = 'mengluowusheng@gmail.com'
-        text = '新用户: ' + username + ' 注册成功!' + 'ip地址为:' + ipaddr + '!' + '手机号为:' + phone
-        send_mail = SendMail(subject, text, email)
-        send_mail.start()
-
-    def send_mail_qqbind(username, ipaddr, nickname):
-        subject = '新用户注册通知'
-        email = 'mengluowusheng@gmail.com'
-        text = '用户: ' + username + ' 绑定qq号成功!' + 'ip地址为:' + ipaddr + '!' + 'qq昵称为:' + nickname
-        send_mail = SendMail(subject, text, email)
-        send_mail.start()
-
-    def send_mail_qqreg(username, ipaddr, nickname):
-        subject = '新用户注册通知'
-        email = 'mengluowusheng@gmail.com'
-        text = '用户: ' + username + ' qq创建账号成功!' + 'ip地址为:' + ipaddr + '!' + 'qq昵称为:' + nickname
-        send_mail = SendMail(subject, text, email)
-        send_mail.start()
-
-
 # 获取昵称
 def get_nickname(self):
     if Profile.objects.filter(user=self).exists():

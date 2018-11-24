@@ -9,7 +9,7 @@ from django.conf import settings
 from oauth.oauth_client import OAuth_QQ
 from oauth.models import OAuth_ex
 from oauth.forms import BindEmail
-from user.models import Profile, SendMail
+from user.models import Profile
 from user.views import get_ip
 
 
@@ -82,8 +82,6 @@ def bind_email(request):
                 # 绑定用户
                 oauth_ex = OAuth_ex(user=username, qq_openid=qq_openid)
                 oauth_ex.save()
-                # 发送邮件
-                SendMail.send_mail_qqbind(username.username, IP, nickname)
                 # 登录用户
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
@@ -95,8 +93,6 @@ def bind_email(request):
                 # 绑定用户
                 oauth_ex = OAuth_ex(user=user, qq_openid=qq_openid)
                 oauth_ex.save()
-                # 发送邮件
-                SendMail.send_mail_qqreg(username, IP, nickname)
                 # 登录用户
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)

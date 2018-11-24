@@ -29,6 +29,7 @@ urlpatterns = [
     path('sensor/', include('sensor.urls')),
     path('oauth/', include('oauth.urls')),
     path('visit/', include('visit.urls')),
+    path('read_statistics/', include('read_statistics.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
