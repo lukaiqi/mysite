@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.db.models import Sum
 from django.core.cache import cache
 from django.db.models import Count
-from django.views.decorators.cache import cache_page
 from read_statistics.utils import get_seven_days_read_data, \
     get_today_hot_data
 from blog.models import Blog, BlogType

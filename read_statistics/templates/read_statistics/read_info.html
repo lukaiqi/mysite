@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}访问统计{% endblock %}
+{% block title %}阅读详情{% endblock %}
 {% block nav_home_active %}active{% endblock %}
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'user/list.css' %}">
@@ -8,30 +8,67 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-10 col-xs-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>阅读信息</h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-bordered" style="table-layout: fixed">
-                            <tr class="success">
-                                <th>标题</th>
-                                <th>IP地址</th>
-                                <th>用户名</th>
-                                <th>阅读时间</th>
-                            </tr>
-                            {% for field in read_info %}
-                                <tr class="success">
-                                    <th><h4>{{ field.content_object.title }}</h4></th>
-                                    <th><h4>{{ field.ip_address }}</h4></th>
-                                    <th><h4>{{ field.user }}</h4></th>
-                                    <th><h4>{{ field.view_time|date:"Y-m-d H:i:s" }}</h4></th>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
+            <div class="col-xs-12">
+                <table class="table table-bordered" style="table-layout: fixed">
+                    <tr class="success">
+                        <th>标题</th>
+                        <th>IP地址</th>
+                        <th>用户名</th>
+                        <th>阅读时间</th>
+                    </tr>
+                    {% for field in read_info %}
+                        <tr class="success">
+                            <th><h4>{{ field.content_object.title }}</h4></th>
+                            <th><h4>{{ field.ip_address }}</h4></th>
+                            <th><h4>{{ field.user }}</h4></th>
+                            <th><h4>{{ field.view_time|date:"Y-m-d H:i:s" }}</h4></th>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="paginator" style="text-align: center">
+                <ul class="pagination">
+                    {# 上一页 #}
+                    <li>
+                        {% if pages.has_previous %}
+                            <a href="?page={{ pages.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        {% else %}
+                            <li class="disabled">
+                                <span aria-hidden="true">&laquo;</span>
+                            </li>
+                        {% endif %}
+                    </li>
+                    {# 全部页码 #}
+                    {% for page_num in page_range %}
+                        {% if page_num == pages.number %}
+                            <li class="active"><span>{{ page_num }}</span></li>
+                        {% else %}
+                            {% if page_num == '...' %}
+                                <li><span>{{ page_num }}</span></li>
+                            {% else %}
+                                <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {# 下一页 #}
+                    <li>
+                        {% if pages.has_next %}
+                            <a href="?page={{ pages.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        {% else %}
+                            <li class="disabled">
+                                <span aria-hidden="true">&raquo;</span>
+                            </li>
+                        {% endif %}
+                    </li>
+                </ul>
+                <p>
+                    共有{{ pages.paginator.count }}条记录，
+                    当前第{{ pages.number }}页，共{{ pages.paginator.num_pages }}页
+                </p>
             </div>
         </div>
     </div>

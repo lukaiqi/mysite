@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from .models import ReadDetail, ReadNum
 
@@ -9,6 +10,7 @@ def record_view(model_type):
         def warpper(request, blog_pk):
             try:
                 obj = model_type.objects.get(id=blog_pk)
+                ct = ContentType.objects.get_for_model(obj)
             except model_type.DoesNotExist:
                 raise Http404
 
@@ -19,28 +21,21 @@ def record_view(model_type):
             # 判断Cookie是否存在
             if not request.COOKIES.get(cookie_name):
                 # 添加明细记录
-                recorder = ReadDetail(content_object=obj)
-                recorder.read_num += 1
-                recorder.ip_address = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", None))
+                readDetail = ReadDetail(content_object=obj)
+                readDetail.read_num += 1
+                readDetail.ip_address = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", None))
                 if request.user.is_authenticated:
-                    recorder.user = request.user
+                    readDetail.user = request.user
                 else:
-                    recorder.user = None
-                recorder.save()
-
+                    readDetail.user = None
+                readDetail.save()
                 # 总记录+1
-                obj_type = ContentType.objects.get_for_model(obj)
-                viewers = ReadNum.objects.filter(content_type=obj_type, object_id=obj.id)
-                if viewers.count() > 0:
-                    viewer = viewers[0]
-                else:
-                    viewer = ReadNum(content_type=obj_type, object_id=obj.id)
-                viewer.read_num += 1
-                viewer.save()
+                readnum, created = ReadNum.objects.get_or_create(content_type=ct, object_id=obj.id)
+                readnum.read_num += 1
+                readnum.save()
 
             # 执行原来的方法(响应页面)
             response = func(request, obj.id)
-
             # 添加临时cookie，30s之后就过期
             response.set_cookie(cookie_name, 'key', max_age=30)
             return response  # 返回内容给前端
