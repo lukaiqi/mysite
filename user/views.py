@@ -2,13 +2,12 @@ import string
 import random
 import time
 import os
-import urllib, urllib.request, sys
+import urllib, urllib.request
 from os import listdir
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -16,8 +15,7 @@ from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
-from .models import Profile, Phone_Profile, Info
-from visit.models import Statistics
+from .models import Profile, Phone_Profile
 
 
 def login(request):
@@ -73,9 +71,7 @@ def logout(request):
     return redirect('/')
 
 
-@cache_page(60 * 5)
 def user_info(request):
-    Statistics.count(request)
     context = {}
     return render(request, 'user/user_info.html', context)
 
@@ -337,16 +333,3 @@ def file_delete(request):
     file_path = base_path + name
     os.remove(file_path)
     return render(request, 'user/file_del.html')
-
-
-@cache_page(60 * 5)
-def info(request):
-    Statistics.count(request)
-    info = Info.objects.all()
-    content = list(info)[0]
-    text = content.text
-    time = content.send_time
-    context = {}
-    context['time'] = time
-    context['text'] = text
-    return render(request, 'user/info.html', context)

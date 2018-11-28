@@ -21,7 +21,8 @@ def record_view(model_type):
             # 判断Cookie是否存在
             if not request.COOKIES.get(cookie_name):
                 # 添加明细记录
-                readDetail = ReadDetail(content_object=obj)
+                date = timezone.now().date()
+                readDetail, created = ReadDetail.objects.get_or_create(content_type=ct, object_id=obj.pk, date=date)
                 readDetail.read_num += 1
                 readDetail.ip_address = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", None))
                 if request.user.is_authenticated:
