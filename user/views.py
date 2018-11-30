@@ -295,7 +295,7 @@ def upload_file(request):
         for chunk in myFile.chunks():  # 分块写入文件
             destination.write(chunk)
         destination.close()
-        return render(request, 'home.html')
+        return redirect('/user/file_list')
 
 
 def upload(request):
@@ -304,7 +304,6 @@ def upload(request):
 
 def file_list(request):
     if request.user.is_superuser:
-        # file_path = 'G:\\mysite_env\\mysite\\templates\\'
         file_path = '/home/mysite/files/'
         file_name_list = listdir(file_path)
         context = {}
@@ -316,7 +315,6 @@ def file_list(request):
 
 def file_download(request):
     name = request.GET.get('filename')
-    # base_path = 'G:\\mysite_env\\mysite\\templates\\'
     base_path = '/home/mysite/files/'
     file_path = base_path + name
     file = open(file_path, 'rb')
@@ -328,7 +326,6 @@ def file_download(request):
 
 def file_delete(request):
     name = request.GET.get('filename')
-    # base_path = 'G:\\mysite_env\\mysite\\templates\\'
     base_path = '/home/mysite/files/'
     file_path = base_path + name
     os.remove(file_path)
