@@ -6,7 +6,7 @@ from .models import ReadDetail
 # Create your views here.
 def read_info(request):
     read_info = ReadDetail.objects.all()
-    paginator = Paginator(read_info, 9)
+    paginator = Paginator(read_info, 10)
     page_num = request.GET.get('page', 1)  # 获取url的页面参数（GET请求）
     pages = paginator.get_page(page_num)
     currentr_page_num = pages.number  # 获取当前页码
