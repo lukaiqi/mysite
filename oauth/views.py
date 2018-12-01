@@ -1,4 +1,6 @@
 import time
+import string
+import random
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse  # url逆向解析
@@ -87,7 +89,8 @@ def bind_email(request):
                 auth.login(request, user)
             else:
                 # 用户不存在，则注册
-                username = qq_nickname  # 使用QQ昵称作为用户名
+                code = ''.join(random.sample(string.digits, 8))
+                username = 'qq_'+code #使用qq_加上随机数作为用户名
                 user = User.objects.create_user(username, email, password)
                 user.save()
                 # 绑定用户

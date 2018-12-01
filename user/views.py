@@ -2,7 +2,7 @@ import string
 import random
 import time
 import os
-import urllib, urllib.request
+import urllib
 from os import listdir
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
