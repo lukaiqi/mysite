@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse, HttpResponse
 from .models import Message
 
 
@@ -20,12 +20,15 @@ def write(request):
 
 
 def show(request):
-    show_list = Message.objects.all()
-    print(show_list)
+    if request.user.is_superuser:
+        show_list = Message.objects.all()
+        print(show_list)
 
-    context = {}
-    context['show_list'] = show_list
-    return render(request, 'sensor/show.html', context)
+        context = {}
+        context['show_list'] = show_list
+        return render(request, 'sensor/show.html', context)
+    else:
+        return render(request, 'error.html')
 
 
 def ajax(request):

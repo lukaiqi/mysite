@@ -28,7 +28,8 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('sensor/', include('sensor.urls')),
     path('oauth/', include('oauth.urls')),
-    path('visit/', include('visit.urls')),
+    path('info/', include('info.urls')),
+    path('file/', include('file.urls')),
     path('read_statistics/', include('read_statistics.urls')),
 ]
 

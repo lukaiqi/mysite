@@ -2,13 +2,12 @@ import string
 import random
 import time
 import os
-import urllib, urllib.request, sys
+import urllib
 from os import listdir
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -16,8 +15,7 @@ from django.utils.encoding import escape_uri_path
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
-from .models import Profile, Phone_Profile, Info
-from visit.models import Statistics
+from .models import Profile, Phone_Profile
 
 
 def login(request):
@@ -51,10 +49,6 @@ def register(request):
             # 登录用户
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
-            # 获取ip地址
-            ipaddr = get_ip(request).getvalue()
-            str = bytes.decode(ipaddr)
-            IP = str.split(':')[1].split('}')[0]
             # 保存电话
             phone_profile, created = Phone_Profile.objects.get_or_create(user=request.user)
             phone_profile.phone = phone
@@ -73,9 +67,7 @@ def logout(request):
     return redirect('/')
 
 
-@cache_page(60 * 5)
 def user_info(request):
-    Statistics.count(request)
     context = {}
     return render(request, 'user/user_info.html', context)
 
@@ -186,7 +178,6 @@ def send_msg_verification_code(request):
         method = 'POST'
         appcode = '6b5974d1336f415ca1901fd6ef6fe95b'
         querys = 'mobile=' + phone + '&param=code%3A' + code + '&tpl_id=TP1712202'
-        bodys = {}
         url = host + path + '?' + querys
 
         request = urllib.request.Request(url)
@@ -227,17 +218,6 @@ def send_email_verification_code(request):
         data['status'] = 'SUCCESS'
     else:
         data['status'] = 'ERROR'
-    return JsonResponse(data)
-
-
-def get_ip(request):
-    data = {}
-    if 'HTTP_X_FORWARDED_FOR' in request.META:  # 获取ip
-        client_ip = request.META['HTTP_X_FORWARDED_FOR']
-        client_ip = client_ip.split(",")[0]  # 所以这里是真实的ip
-    else:
-        client_ip = request.META['REMOTE_ADDR']  # 这里获得代理ip
-    data['client_ip'] = client_ip
     return JsonResponse(data)
 
 
@@ -291,15 +271,18 @@ def forgot_password(request):
 
 
 def upload_file(request):
-    if request.method == "POST":  # 请求方法为POST时，进行处理
-        myFile = request.FILES.get("file", None)  # 获取上传的文件，如果没有文件，则默认为None
-        if not myFile:
-            return HttpResponse("未选择上传文件")
-        destination = open(os.path.join("/home/mysite/files", myFile.name), 'wb+')  # 打开特定的文件进行二进制的写操作
-        for chunk in myFile.chunks():  # 分块写入文件
-            destination.write(chunk)
-        destination.close()
-        return render(request, 'home.html')
+    if request.user.is_superuser:
+        if request.method == "POST":  # 请求方法为POST时，进行处理
+            myFile = request.FILES.get("file", None)  # 获取上传的文件，如果没有文件，则默认为None
+            if not myFile:
+                return HttpResponse("未选择上传文件")
+            destination = open(os.path.join("/home/mysite/files", myFile.name), 'wb+')  # 打开特定的文件进行二进制的写操作
+            for chunk in myFile.chunks():  # 分块写入文件
+                destination.write(chunk)
+            destination.close()
+            return redirect('/user/file_list')
+    else:
+        return render(request, 'error.html')
 
 
 def upload(request):
@@ -308,7 +291,6 @@ def upload(request):
 
 def file_list(request):
     if request.user.is_superuser:
-        # file_path = 'G:\\mysite_env\\mysite\\templates\\'
         file_path = '/home/mysite/files/'
         file_name_list = listdir(file_path)
         context = {}
@@ -320,7 +302,6 @@ def file_list(request):
 
 def file_download(request):
     name = request.GET.get('filename')
-    # base_path = 'G:\\mysite_env\\mysite\\templates\\'
     base_path = '/home/mysite/files/'
     file_path = base_path + name
     file = open(file_path, 'rb')
@@ -332,21 +313,7 @@ def file_download(request):
 
 def file_delete(request):
     name = request.GET.get('filename')
-    # base_path = 'G:\\mysite_env\\mysite\\templates\\'
     base_path = '/home/mysite/files/'
     file_path = base_path + name
     os.remove(file_path)
     return render(request, 'user/file_del.html')
-
-
-@cache_page(60 * 5)
-def info(request):
-    Statistics.count(request)
-    info = Info.objects.all()
-    content = list(info)[0]
-    text = content.text
-    time = content.send_time
-    context = {}
-    context['time'] = time
-    context['text'] = text
-    return render(request, 'user/info.html', context)

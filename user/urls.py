@@ -15,10 +15,4 @@ urlpatterns = [
     path('send_email_verification_code', views.send_email_verification_code, name='send_email_verification_code'),
     path('change_password', views.change_password, name='change_password'),
     path('forgot_password', views.forgot_password, name='forgot_password'),
-    path('upload', views.upload, name='upload'),
-    path('upload_file', views.upload_file, name='upload_file'),
-    path('file_download', views.file_download, name='file_download'),
-    path('file_list', views.file_list, name='file_list'),
-    path('file_delete', views.file_delete, name='file_delete'),
-    path('info', views.info, name='info'),
 ]

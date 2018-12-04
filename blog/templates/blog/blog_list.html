@@ -47,7 +47,9 @@
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             {% else %}
-                                <span aria-hidden="true">&laquo;</span>
+                                <li class="disabled">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </li>
                             {% endif %}
                         </li>
                         {# 全部页码 #}
@@ -69,7 +71,9 @@
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             {% else %}
-                                <span aria-hidden="true">&raquo;</span>
+                                <li class="disabled">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </li>
                             {% endif %}
                         </li>
                     </ul>

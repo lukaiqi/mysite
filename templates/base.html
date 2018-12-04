@@ -5,11 +5,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--关键词-->
+    <meta name="keywords" content="django2.0,django,python,linux,android,博客，安卓，2440">
+    <!--记录-->
+    <meta name="description" content="记录网站的搭建过程以及知识点的分享，撰写发布一些Linux，Android以及Python相关的知识">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
+    <!--代码高亮样式-->
+    <link rel="stylesheet" href="/static/default.css">
     <script type="text/javascript" src="{% static 'jquery-1.12.4.min.js' %}"></script>
+    <!-- 代码高亮-->
+    <script type="text/javascript" src="/static/highlight.pack.js"></script>
+    <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+    <!-- bootstrap3-->
     <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+    <!--百度收录-->
+    <script type="text/javascript" src="/static/baidu_link_push.js"></script>
     {% block header_extends %}{% endblock %}
 </head>
 <body>
@@ -38,7 +50,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'info' %}">
+                    <a href="{% url 'about' %}">
                         <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
                         关于
                     </a>

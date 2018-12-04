@@ -1,9 +1,5 @@
-import threading
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
-from django.core.mail import send_mail
-from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Profile(models.Model):
@@ -28,19 +24,6 @@ class Phone_Profile(models.Model):
 
     def __str__(self):
         return '<Phone:%s >' % (self.phone)
-
-
-class Info(models.Model):
-    user = models.ForeignKey(User, related_name="info", on_delete=models.CASCADE)
-    send_time = models.DateTimeField(auto_now=True)
-    text = RichTextUploadingField()
-
-    class Meta:
-        verbose_name = '公告'
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return '<Text:%s >' % (self.text)
 
 
 # 获取昵称

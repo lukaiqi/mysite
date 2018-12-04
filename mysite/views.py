@@ -5,11 +5,10 @@ from django.utils import timezone
 from django.db.models import Sum
 from django.core.cache import cache
 from django.db.models import Count
-from django.views.decorators.cache import cache_page
 from read_statistics.utils import get_seven_days_read_data, \
-    get_today_hot_data
+    get_yesterday_hot_data, get_today_hot_data
 from blog.models import Blog, BlogType
-from visit.models import Statistics
+from info.views import get_notice
 
 
 def get_7_days_hot_blogs():
@@ -20,7 +19,7 @@ def get_7_days_hot_blogs():
         .values('id', 'title') \
         .annotate(read_num_sum=Sum('read_details__read_num')) \
         .order_by('-read_num_sum')
-    return blogs[:7]
+    return blogs[:10]
 
 
 def get_30_days_hot_blogs():
@@ -31,11 +30,10 @@ def get_30_days_hot_blogs():
         .values('id', 'title') \
         .annotate(read_num_sum=Sum('read_details__read_num')) \
         .order_by('-read_num_sum')
-    return blogs[:7]
+    return blogs[:10]
 
 
 def home(request):
-    Statistics.count(request)
     blog_content_type = ContentType.objects.get_for_model(Blog)
     dates, read_nums = get_seven_days_read_data(blog_content_type)
 
@@ -52,9 +50,11 @@ def home(request):
 
     context = {}
     context['dates'] = dates
+    context['notice'] = get_notice()
     context['read_nums'] = read_nums
     context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))
     context['today_hot_data'] = get_today_hot_data(blog_content_type)
+    context['yesterday_hot_data'] = get_yesterday_hot_data(blog_content_type)
     context['hot_blogs_for_7_days'] = hot_blogs_for_7_days
     context['hot_blogs_for_30_days'] = hot_blogs_for_30_days
     return render(request, 'home.html', context)
