@@ -29,7 +29,10 @@ urlpatterns = [
     path('sensor/', include('sensor.urls')),
     path('oauth/', include('oauth.urls')),
     path('info/', include('info.urls')),
+<<<<<<< HEAD
     path('file/', include('file.urls')),
+=======
+>>>>>>> 58263699b7569ed0dc45a1329917089870a93d30
     path('read_statistics/', include('read_statistics.urls')),
 ]
 
