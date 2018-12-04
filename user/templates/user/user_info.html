@@ -64,16 +64,3 @@
         </div>
     </div>
 {% endblock %}
-{% block script_extends %}
-    <script type="text/javascript">
-        $.ajax({
-            url: "{% url 'get_ip' %}",
-            type: "GET",
-            cache: false,
-            success: function (response) {
-                var ip = response.client_ip;
-                $("#ip").text(ip);
-            }
-        });
-    </script>
-{% endblock %}

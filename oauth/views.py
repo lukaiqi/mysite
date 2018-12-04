@@ -12,7 +12,6 @@ from oauth.oauth_client import OAuth_QQ
 from oauth.models import OAuth_ex
 from oauth.forms import BindEmail
 from user.models import Profile
-from user.views import get_ip
 
 
 def qq_login(request):
@@ -61,10 +60,6 @@ def bind_email(request):
     data['form_tip'] = 'Hi, <span class="label label-info">' \
                        '<img src="/static/images/qq_logo.png">%s</span>！' \
                        '您已登录。请绑定用户，完成QQ登录' % nickname
-    # 获取ip地址
-    ipaddr = get_ip(request).getvalue()
-    str = bytes.decode(ipaddr)
-    IP = str.split(':')[1].split('}')[0]
     if request.method == 'POST':
         # 表单提交
         form = BindEmail(request.POST, request=request)
