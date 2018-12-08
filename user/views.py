@@ -7,6 +7,7 @@ from os import listdir
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib import auth
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.mail import send_mail
@@ -168,7 +169,7 @@ def send_msg_verification_code(request):
         code = ''.join(random.sample(string.digits, 4))
         now = int(time.time())
         send_code_time = request.session.get('send_code_time', 0)
-        if now - send_code_time < 30:
+        if now - send_code_time < 60:
             data['status'] = 'ERROR'
         else:
             request.session[send_for] = code
@@ -176,7 +177,7 @@ def send_msg_verification_code(request):
         host = 'http://dingxin.market.alicloudapi.com'
         path = '/dx/sendSms'
         method = 'POST'
-        appcode = '6b5974d1336f415ca1901fd6ef6fe95b'
+        appcode = settings.APP_CODE
         querys = 'mobile=' + phone + '&param=code%3A' + code + '&tpl_id=TP1712202'
         url = host + path + '?' + querys
 
@@ -202,7 +203,7 @@ def send_email_verification_code(request):
         code = ''.join(random.sample(string.digits, 4))
         now = int(time.time())
         send_code_time = request.session.get('send_code_time', 0)
-        if now - send_code_time < 30:
+        if now - send_code_time < 60:
             data['status'] = 'ERROR'
         else:
             request.session[send_for] = code

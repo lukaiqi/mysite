@@ -15,7 +15,7 @@ def upload_file(request):
             for chunk in myFile.chunks():  # 分块写入文件
                 destination.write(chunk)
             destination.close()
-            return redirect('/user/file_list')
+            return redirect('/file/file_list')
     else:
         return render(request, 'error.html')
 

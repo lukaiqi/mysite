@@ -72,7 +72,7 @@
             {#使发送按钮变灰#}
             $(this).addClass('disabled');
             $(this).attr('disabled', true);
-            var time = 30;
+            var time = 60;
             $(this).text(time + 'S');
             var interval = setInterval(() => {
                 if (time < 1) {
