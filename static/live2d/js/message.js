@@ -287,7 +287,7 @@ if (!norunFlag) {
                     success: function (res) {
                         var text = res.results[0].values.text;
                         var code = res.intent.code;
-                        if (code < 10000) {
+                        if (code !== 10004) {
                             talkValTimer();
                             showMessage('似乎有什么错误，请和站长联系！', 0);
                         } else {

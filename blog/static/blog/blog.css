@@ -2,10 +2,18 @@ ul.blog-types {
     list-style-type: none;
 }
 
-div.blog:not(:last-child) {
+.content-img {
+    display: inline-block;
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 1.2em;
+}
+
+div.blog {
     margin-bottom: 2em;
-    padding-bottom: 1em;
-    border-bottom: 1px solid #eee;
+    /*border: 1px solid #5bc0de;*/
+    padding: 0.8em;
 }
 
 div.blog h3 {

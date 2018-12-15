@@ -75,7 +75,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'user_info' %}?from={{ request.get_full_path }}">个人资料</a></li>
                             {% if user.is_staff or user.is_superuser %}
-                                <li><a href="http://lkqblog.cn/admin/blog/blog/add/">发布博客</a></li>
+                                <li><a href="/admin/blog/blog/add/">发布博客</a></li>
                                 <li><a href="{% url 'show' %}">环境显示</a></li>
                                 <li><a href="{% url 'upload' %}">文件上传</a></li>
                             {% endif %}
@@ -93,6 +93,7 @@
 </div>
 
 {% block content %}{% endblock %}
+{% block img %}{% endblock %}
 {% block script_extends %}{% endblock %}
 </body>
 </html>

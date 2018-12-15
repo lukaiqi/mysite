@@ -13,11 +13,10 @@ def tuling(request):
     name = request.POST.get('userId')
     text = request.POST.get('text')
     url = "http://openapi.tuling123.com/openapi/api/v2"
-    # url = "http://examle.com"
     payload = "{" \
               "\"perception\": {" \
               "\"inputText\": {" \
-              "\"text\":" + repr(text) + \
+              "\"text\":" + repr(str(text.encode('utf-8'))) + \
               "}," \
               "}," \
               "\"userInfo\": {" \
@@ -29,5 +28,5 @@ def tuling(request):
         'content-type': "application/json",
         'charset': "utf-8",
     }
-    response = requests.request("POST", url, data=payload.encode(), headers=headers)
+    response = requests.request("POST", url, data=payload, headers=headers)
     return HttpResponse(response.text)

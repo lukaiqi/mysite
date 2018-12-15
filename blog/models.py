@@ -20,6 +20,7 @@ class BlogType(models.Model):
 class Blog(models.Model, ReadNumExpandMethod):
     title = models.CharField(max_length=50)
     blog_type = models.ForeignKey(BlogType, on_delete=models.CASCADE)
+    image = RichTextUploadingField(config_name='blog_img_ckeditor')
     content = RichTextUploadingField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     read_details = GenericRelation(ReadDetail)

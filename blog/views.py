@@ -1,7 +1,9 @@
+from os import listdir
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models import Count
+from django.http import JsonResponse
 from .models import Blog, BlogType
 from read_statistics.decorator import record_view
 
