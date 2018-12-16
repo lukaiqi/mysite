@@ -16,7 +16,7 @@ def tuling(request):
     payload = "{" \
               "\"perception\": {" \
               "\"inputText\": {" \
-              "\"text\":" + repr(str(text.encode('utf-8'))) + \
+              "\"text\":" + repr(text) + \
               "}," \
               "}," \
               "\"userInfo\": {" \
@@ -28,5 +28,5 @@ def tuling(request):
         'content-type': "application/json",
         'charset': "utf-8",
     }
-    response = requests.request("POST", url, data=payload, headers=headers)
+    response = requests.request("POST", url, data=payload.encode(), headers=headers)
     return HttpResponse(response.text)

@@ -22,6 +22,7 @@ div.blog h3 {
 
 div.blog p.blog-info {
     margin-bottom: 0;
+    padding-top: 0.8em;
 }
 
 div.paginator {
