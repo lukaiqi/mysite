@@ -90,11 +90,11 @@ if (!norunFlag) {
                             hitFlag = true;
                             setTimeout(function () {
                                 hitFlag = false;
-                            }, 8000);
+                            }, 100);
                             var text = tips.text;
                             if (Array.isArray(tips.text)) text = tips.text[Math.floor(Math.random() * tips.text.length + 1) - 1];
                             text = text.renderTip({text: $(this).text()});
-                            showMessage(text, 3000);
+                            showMessage(text, 100);
                         });
                         clearInterval(liveTlakTimer);
                         liveTlakTimer = null;
@@ -260,19 +260,8 @@ if (!norunFlag) {
             });
             $('#talk_send').on('click', function () {
                 var info_ = $('#AIuserText').val();
-                var userid_ = $('#AIuserName').val();
-                var checkint = parseInt(userid_)
                 if (info_ == "") {
                     showMessage('写点什么吧！', 0);
-                    return;
-                }
-                if (userid_ == "") {
-                    showMessage('聊之前请告诉我你的id吧！', 0);
-                    return;
-                }
-                if (isNaN(checkint)) {
-                    $('#AIuserName').val("");
-                    showMessage('id只能是数字哦！', 0);
                     return;
                 }
                 showMessage('思考中~', 0);
@@ -281,13 +270,13 @@ if (!norunFlag) {
                     url: talkAPI,
                     data: {
                         "text": info_,
-                        "userId": userid_
+                        "userId": '007'
                     },
                     dataType:"json",
                     success: function (res) {
                         var text = res.results[0].values.text;
                         var code = res.intent.code;
-                        if (code !== 10004) {
+                        if (code < 10000) {
                             talkValTimer();
                             showMessage('似乎有什么错误，请和站长联系！', 0);
                         } else {
@@ -295,7 +284,7 @@ if (!norunFlag) {
                             showMessage(text, 0);
                         }
                         $('#AIuserText').val("");
-                        sessionStorage.setItem("live2duser", userid_);
+                        sessionStorage.setItem("live2duser", '007');
                     }
                 });
             });
