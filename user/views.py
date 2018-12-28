@@ -1,18 +1,19 @@
+import json
+import os
 import string
 import random
 import time
-import os
 import urllib
-from os import listdir
+import uuid
+from PIL import Image
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, FileResponse
 from django.contrib import auth
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.http import JsonResponse
-from django.utils.encoding import escape_uri_path
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from .forms import LoginForm, RegForm, ChangeNicknameForm, \
     ChangeEmailForm, ChangePasswordForm, ForgotPasswordForm, \
     BindPhoneForm, ChangePhoneForm
@@ -271,50 +272,51 @@ def forgot_password(request):
     return render(request, 'user/forgot_password.html', context)
 
 
-def upload_file(request):
-    if request.user.is_superuser:
-        if request.method == "POST":  # 请求方法为POST时，进行处理
-            myFile = request.FILES.get("file", None)  # 获取上传的文件，如果没有文件，则默认为None
-            if not myFile:
-                return HttpResponse("未选择上传文件")
-            destination = open(os.path.join("/home/mysite/files", myFile.name), 'wb+')  # 打开特定的文件进行二进制的写操作
-            for chunk in myFile.chunks():  # 分块写入文件
-                destination.write(chunk)
-            destination.close()
-            return redirect('/user/file_list')
+def user_avatar(request):
+    if request.user.is_authenticated:
+        data = {}
+        data['user'] = request.user
+        return render(request, 'user/avatar.html', data)
     else:
         return render(request, 'error.html')
 
 
-def upload(request):
-    return render(request, 'user/file_upload.html')
+@csrf_exempt
+def user_avatar_upload(request):
+    if request.user.is_authenticated:
+        data = {}
+        avatar_file = request.FILES['avatar_file']
+        temp_folder = os.path.join('static', 'temp')
+        if not os.path.isdir(temp_folder):
+            os.makedirs(temp_folder)
 
+        temp_filename = uuid.uuid1().hex + os.path.splitext(avatar_file.name)[-1]
+        temp_path = os.path.join(temp_folder, temp_filename)
 
-def file_list(request):
-    if request.user.is_superuser:
-        file_path = '/home/mysite/files/'
-        file_name_list = listdir(file_path)
-        context = {}
-        context['file_name_list'] = file_name_list
-        return render(request, 'user/files.html', context)
+        # 保存上传的文件
+        with open(temp_path, 'wb') as f:
+            for chunk in avatar_file.chunks():
+                f.write(chunk)
+
+        # 裁剪图片
+        top = int(float(request.POST['avatar_y']))
+        buttom = top + int(float(request.POST['avatar_height']))
+        left = int(float(request.POST['avatar_x']))
+        right = left + int(float(request.POST['avatar_width']))
+        img = Image.open(temp_path)
+        # 裁剪图片
+        crop_im = img.convert("RGBA").crop((left, top, right, buttom)).resize((64, 64), Image.ANTIALIAS)
+        # 设置背景颜色为白色
+        out = Image.new('RGBA', crop_im.size, (255, 255, 255))
+        out.paste(crop_im, (0, 0, 64, 64), crop_im)
+        # 保存图片
+        out.save(temp_path)
+        # 保存记录
+        avatar = request.user.set_avatar_url(temp_path)
+        print(avatar.avatar.url[6:])
+        os.remove(temp_path)
+        data['success'] = True
+        data['avatar_url'] = avatar.avatar.url[6:]
+        return HttpResponse(json.dumps(data), content_type="application/json")
     else:
         return render(request, 'error.html')
-
-
-def file_download(request):
-    name = request.GET.get('filename')
-    base_path = '/home/mysite/files/'
-    file_path = base_path + name
-    file = open(file_path, 'rb')
-    response = FileResponse(file)
-    response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(escape_uri_path(name))
-    return response
-
-
-def file_delete(request):
-    name = request.GET.get('filename')
-    base_path = '/home/mysite/files/'
-    file_path = base_path + name
-    os.remove(file_path)
-    return render(request, 'user/file_del.html')

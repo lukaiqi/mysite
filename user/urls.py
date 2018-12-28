@@ -14,4 +14,6 @@ urlpatterns = [
     path('send_email_verification_code', views.send_email_verification_code, name='send_email_verification_code'),
     path('change_password', views.change_password, name='change_password'),
     path('forgot_password', views.forgot_password, name='forgot_password'),
+    path('user_avatar', views.user_avatar, name='user_avatar'),
+    path('user_avatar_upload', views.user_avatar_upload, name='user_avatar_upload'),
 ]

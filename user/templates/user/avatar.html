@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}修改头像{% endblock %}
+{% block header_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'cropper.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'user/avatar.css' %}">
+    <script src="/static/cropper.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="col-sm-10">
+        <!--编辑区域-->
+        <p id="tip-text" class="alert alert-success">点击本地图片上传一张照片呗~</p>
+        <div class="avatar-wrapper" id='avatar-wrapper'>
+            <img src="">
+        </div>
+        <br>
+        <!--编辑相关数据-->
+        <form id="avatar_form">
+            <div>
+                <input type="hidden" id="avatar_x" name="avatar_x">
+                <input type="hidden" id="avatar_y" name="avatar_y">
+                <input type="hidden" id="avatar_width" name="avatar_width">
+                <input type="hidden" id="avatar_height" name="avatar_height">
+                <input style="display:none" type="file" class="avatar-input" id="avatar-input" name="avatar_file"
+                       accept=".png">
+            </div>
+        </form>
+        <div>
+            <label class="btn btn-primary" for="avatar-input">本地图片</label>
+            &emsp;&emsp;&emsp;
+            <button class="btn btn-primary">
+                <span class="glyphicon glyphicon-zoom-in" id="zoom-in" aria-hidden="true"></span></button>
+            <button class="btn btn-primary">
+                <span class="glyphicon glyphicon-zoom-out" id="zoom-out" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-primary">
+                <span class="glyphicon glyphicon-refresh" id="reset" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <!--头像预览-->
+        <div class="avatar-preview"><img style="width: 96px; height: 96px;" src="/{{ user.get_avatar_url }}"></div>
+        <a id="avatar-upload" name="avatar-upload" href="#" class="btn btn-primary disabled">上传头像</a>
+    </div>
+{% endblock %}
+{% block script_extends %}
+    <script type="text/javascript">
+        $(function () {
+            //初始化裁剪器
+            var image = $('#avatar-wrapper img');
+            image.cropper({
+                checkImageOrigin: true, //检查图片来源
+                dragMode: 'move',   //图片可移动
+                restore: false,      //窗体调整大小之后不自动恢复裁剪区域
+                zoomOnWheel: false, //不允许通过鼠标滚轮缩放
+                zoomOnTouch: false, //不允许通过触摸缩放
+                aspectRatio: 1 / 1, //裁剪比例
+                autoCropArea: 0.5,  //裁剪背景透明度
+                autoCropArea: 1,    //自动裁剪的比例
+
+                //文本的jQuery选择表达式，一个div
+                preview: $(".avatar-preview").selector,
+                crop: function (e) {
+                    e = e.detail
+                    //返回图片编辑相关数据
+                    $('#avatar_x').val(e.x);
+                    $('#avatar_y').val(e.y);
+                    $('#avatar_width').val(e.width);
+                    $('#avatar_height').val(e.height);
+                },
+            });
+            $("#avatar-input").change(function () {
+                var URL = window.URL || window.webkitURL;
+                if (URL) {
+                    var files = this.files;
+                    if (files && files.length) {
+                        var file = files[0];
+                        if (/^image\/\w+$/.test(file.type)) {
+                            var blobURL = URL.createObjectURL(file);
+                            image.cropper('reset').cropper('replace', blobURL);
+                            $('#avatar-upload').removeClass('disabled');
+                            normal_tip('本地图片：可调整到最佳状态再上传');
+                        } else {
+                            error_tip('请选择一张图片');
+                        }
+                    }
+                }
+            });
+            $("#avatar-upload").click(function () {
+                if ($('#avatar-wrapper img').attr('src') == '') {
+                    alert('亲~ 你是不是忘记选择图片了');
+                    return false;
+                }
+                //注意：FormData中的[0]是必备的
+                var formData = new FormData($("#avatar_form")[0]);
+                $.ajax({
+                    url: "{%url 'user_avatar_upload'%}",
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log('123:', data['avatar_url']);
+                        //更新导航右上角的头像
+                        $('.navbar-avatar').attr('src', data['avatar_url']);
+                        normal_tip("头像上传成功");
+                    },
+                    error: function (err) {
+                        error_tip("提交失败，请重试！请选择png格式的图片" );
+                    }
+                });
+                return false;
+            });
+            var zoom = 1;
+            $("#zoom-in").click(function () {
+                if (zoom < 1.5) {
+                    zoom += 0.1;
+                    image.cropper("zoom", 0.1);
+                }
+            });
+            $("#zoom-out").click(function () {
+                if (zoom > 0.5) {
+                    zoom -= 0.1;
+                    image.cropper("zoom", -0.1);
+                }
+            });
+            //复位按钮
+            $('#reset').click(function () {
+                image.cropper("reset");
+                zoom = 1;
+            });
+        });
+
+        function error_tip(text) {
+            $('#tip-text').removeClass();
+            $('#tip-text').addClass('alert alert-danger');
+            $('#tip-text').text(text);
+        }
+
+        function normal_tip(text) {
+            $('#tip-text').removeClass();
+            $('#tip-text').addClass('alert alert-info');
+            $('#tip-text').text(text);
+        }
+
+    </script>
+{% endblock %}
+</body>
+</html>
