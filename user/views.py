@@ -11,6 +11,7 @@ from django.contrib import auth
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
+from PIL import Image
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -286,35 +287,36 @@ def user_avatar_upload(request):
     if request.user.is_authenticated:
         data = {}
         avatar_file = request.FILES['avatar_file']
-        temp_folder = os.path.join('static', 'temp')
+        temp_folder = os.path.join('media', 'temp')
+        print(temp_folder)
         if not os.path.isdir(temp_folder):
             os.makedirs(temp_folder)
-
         temp_filename = uuid.uuid1().hex + os.path.splitext(avatar_file.name)[-1]
         temp_path = os.path.join(temp_folder, temp_filename)
-
         # 保存上传的文件
         with open(temp_path, 'wb') as f:
             for chunk in avatar_file.chunks():
                 f.write(chunk)
-
         # 裁剪图片
         top = int(float(request.POST['avatar_y']))
         buttom = top + int(float(request.POST['avatar_height']))
         left = int(float(request.POST['avatar_x']))
         right = left + int(float(request.POST['avatar_width']))
-        img = Image.open(temp_path)
+        im = Image.open(temp_path)
         # 裁剪图片
-        crop_im = img.convert("RGBA").crop((left, top, right, buttom)).resize((64, 64), Image.ANTIALIAS)
+        crop_im = im.convert("RGBA").crop((left, top, right, buttom)).resize((64, 64), Image.ANTIALIAS)
+
         # 设置背景颜色为白色
         out = Image.new('RGBA', crop_im.size, (255, 255, 255))
         out.paste(crop_im, (0, 0, 64, 64), crop_im)
+
         # 保存图片
         out.save(temp_path)
+
         # 保存记录
         avatar = request.user.set_avatar_url(temp_path)
-        print(avatar.avatar.url[6:])
         os.remove(temp_path)
+
         data['success'] = True
         data['avatar_url'] = avatar.avatar.url[6:]
         return HttpResponse(json.dumps(data), content_type="application/json")

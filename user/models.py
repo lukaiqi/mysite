@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 # 头像路径
 
-AVATAR_ROOT = 'static/media/avatar'
+AVATAR_ROOT = 'media/static/avatar'
 AVATAR_DEFAULT = os.path.join(AVATAR_ROOT, 'default.png')
 
 
