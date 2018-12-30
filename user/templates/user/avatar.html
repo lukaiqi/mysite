@@ -22,7 +22,7 @@
                 <input type="hidden" id="avatar_width" name="avatar_width">
                 <input type="hidden" id="avatar_height" name="avatar_height">
                 <input style="display:none" type="file" class="avatar-input" id="avatar-input" name="avatar_file"
-                       accept=".png">
+                       accept=".jpg,.jpeg,.png">
             </div>
         </form>
         <div>
@@ -104,13 +104,12 @@
                     contentType: false,
                     processData: false,
                     success: function (data) {
-                        console.log('123:', data['avatar_url']);
                         //更新导航右上角的头像
-                        $('.navbar-avatar').attr('src', data['avatar_url']);
+                        $('.navbar-avatar').attr('src', '/'+data['avatar_url']);
                         normal_tip("头像上传成功");
                     },
                     error: function (err) {
-                        error_tip("提交失败，请重试！请选择png格式的图片" );
+                        error_tip("提交失败，请重试！" );
                     }
                 });
                 return false;

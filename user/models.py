@@ -1,6 +1,5 @@
 import os
 import shutil
-
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -92,26 +91,17 @@ def get_avatar_url(self):
 def set_avatar_url(self, src_path):
     try:
         avatar = Avatar.objects.filter(user=self.id)[0]
-        old_path = os.path.join(settings.BASE_DIR, avatar.avatar.url)  # 旧的头像路径
-        old_filename = os.path.splitext(os.path.split(old_path)[-1])[0]
+        old_path = os.path.join(settings.BASE_DIR, avatar.avatar.name)  # 旧的头像路径
 
-        # 获得起始编号
-        start_num = int(old_filename.split('_')[-1]) + 1
     except Exception:
         avatar = Avatar(user=self)
-        start_num = 0
         old_path = ''
-
     # 根据user id设置新的头像名称
     filename = os.path.split(src_path)[-1]
     img_format = os.path.splitext(filename)[-1]
 
-    while True:
-        new_filename = '%s_64_%s%s' % (self.id, start_num, img_format)
-        new_path = os.path.join(settings.BASE_DIR, AVATAR_ROOT, new_filename)
-        if not os.path.isfile(new_path):
-            break
-        start_num += 1
+    new_filename = 'avatar_%s%s' % (self.id, img_format)
+    new_path = os.path.join(settings.BASE_DIR, AVATAR_ROOT, new_filename)
 
     # 保存头像
     shutil.copy(src_path, new_path)

@@ -288,7 +288,6 @@ def user_avatar_upload(request):
         data = {}
         avatar_file = request.FILES['avatar_file']
         temp_folder = os.path.join('media', 'temp')
-        print(temp_folder)
         if not os.path.isdir(temp_folder):
             os.makedirs(temp_folder)
         temp_filename = uuid.uuid1().hex + os.path.splitext(avatar_file.name)[-1]
@@ -303,11 +302,14 @@ def user_avatar_upload(request):
         left = int(float(request.POST['avatar_x']))
         right = left + int(float(request.POST['avatar_width']))
         im = Image.open(temp_path)
+        chanel = len(im.split())
         # 裁剪图片
         crop_im = im.convert("RGBA").crop((left, top, right, buttom)).resize((64, 64), Image.ANTIALIAS)
-
-        # 设置背景颜色为白色
-        out = Image.new('RGBA', crop_im.size, (255, 255, 255))
+        if chanel == 4:
+            # 设置背景颜色为白色
+            out = crop_im
+        else:
+            out = crop_im.convert('RGB')
         out.paste(crop_im, (0, 0, 64, 64), crop_im)
 
         # 保存图片
@@ -318,7 +320,8 @@ def user_avatar_upload(request):
         os.remove(temp_path)
 
         data['success'] = True
-        data['avatar_url'] = avatar.avatar.url[6:]
+        data['avatar_url'] = avatar.avatar.name
+        print(data)
         return HttpResponse(json.dumps(data), content_type="application/json")
     else:
         return render(request, 'error.html')
