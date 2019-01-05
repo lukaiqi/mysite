@@ -96,6 +96,14 @@ def set_avatar_url(self, src_path):
     except Exception:
         avatar = Avatar(user=self)
         old_path = ''
+
+    # # 删除旧文件
+    # if os.path.isfile(old_path):
+    #     os.remove(old_path)
+    # else:
+    #     print('not have')
+    # return avatar
+
     # 根据user id设置新的头像名称
     filename = os.path.split(src_path)[-1]
     img_format = os.path.splitext(filename)[-1]
@@ -107,10 +115,6 @@ def set_avatar_url(self, src_path):
     shutil.copy(src_path, new_path)
     avatar.avatar = os.path.join(AVATAR_ROOT, new_filename)
     avatar.save()
-
-    # 删除旧文件
-    if os.path.isfile(old_path):
-        os.remove(old_path)
     return avatar
 
 

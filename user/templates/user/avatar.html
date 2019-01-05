@@ -104,12 +104,11 @@
                     contentType: false,
                     processData: false,
                     success: function (data) {
-                        //更新导航右上角的头像
-                        $('.navbar-avatar').attr('src', '/'+data['avatar_url']);
                         normal_tip("头像上传成功");
+                        window.location.href = '/user/user_info';
                     },
                     error: function (err) {
-                        error_tip("提交失败，请重试！" );
+                        error_tip("提交失败，请重试！");
                     }
                 });
                 return false;

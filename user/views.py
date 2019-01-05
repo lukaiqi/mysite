@@ -318,10 +318,9 @@ def user_avatar_upload(request):
         # 保存记录
         avatar = request.user.set_avatar_url(temp_path)
         os.remove(temp_path)
-
+        #
         data['success'] = True
-        data['avatar_url'] = avatar.avatar.name
-        print(data)
+        # data['avatar_url'] = avatar.avatar.name
         return HttpResponse(json.dumps(data), content_type="application/json")
     else:
         return render(request, 'error.html')
