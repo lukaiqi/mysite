@@ -18,9 +18,10 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from blog import views as bv
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', bv.blog_list, name='blog_list'),
     path('tuling', views.tuling, name='tuling'),
     path('admin/', admin.site.urls),
     path('ckeditor', include('ckeditor_uploader.urls')),
@@ -29,7 +30,6 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('sensor/', include('sensor.urls')),
     path('oauth/', include('oauth.urls')),
-    path('info/', include('info.urls')),
     path('file/', include('file.urls')),
     path('read_statistics/', include('read_statistics.urls')),
 ]

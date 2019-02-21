@@ -46,7 +46,19 @@ def blogs_with_type(request, blog_type_pk):
     blogs_all_list = Blog.objects.filter(blog_type=blog_type)
     context = get_blog_list_common_data(request, blogs_all_list)
     context['blog_type'] = blog_type
-    return render(request, 'blog/blogs_with_type.html', context)
+    classify = str(blog_type)
+    print('sdsad',classify ,)
+    if classify == 'crawler':
+        print('111111111')
+        return render(request, 'blog/crawler.html', context)
+    elif classify == 'drf':
+        return render(request, 'blog/drf.html', context)
+    elif classify == 'linux':
+        return render(request, 'blog/linux.html', context)
+    elif classify == 'web':
+        return render(request, 'blog/web.html', context)
+    else:
+        return render(request, 'blog/site.html', context)
 
 
 @record_view(Blog)

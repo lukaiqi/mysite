@@ -3,7 +3,6 @@ from . import views
 
 # start with blog
 urlpatterns = [
-    # http://localhost:8000/blog/
     path('', views.blog_list, name='blog_list'),
     path('blog_search', views.blog_search, name='blog_search'),
     path('<int:blog_pk>', views.blog_detail, name="blog_detail"),

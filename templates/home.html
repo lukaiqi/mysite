@@ -4,7 +4,6 @@
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <link rel="stylesheet" href="{% static 'live2d/css/live2d.css' %}"/>
-    <script src="//cdn.hcharts.cn/highcharts/highcharts.js"></script>
 {% endblock %}
 {% block nav_home_active %}active{% endblock %}
 {% block content %}
@@ -32,7 +31,6 @@
         </div>
     </div>
     <div id="open_live2d">召唤小人</div>
-{#    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js"></script>#}
     <script>
         var message_Path = 'static/live2d/';//资源目录，如果目录不对请更改
         var home_Path = '/'
