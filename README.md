@@ -1,1 +1,1 @@
-# mysite
+基于Django2.1和bootstrap以及jQuery开发的简单博客网站，包括文章的后台发表，文章评论，用户登录注册以及qq登录等功能
